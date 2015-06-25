@@ -1,5 +1,6 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GestureDetectorCompat;
@@ -27,7 +28,7 @@ import java.util.List;
 import static android.view.GestureDetector.SimpleOnGestureListener;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class ReviewBillActivity extends Activity implements RecyclerView
+public class ReviewBillActivity extends ActionBarActivity implements RecyclerView
         .OnItemTouchListener,
         View.OnClickListener, Parcelable,
         ActionMode.Callback {
@@ -64,9 +65,9 @@ public class ReviewBillActivity extends Activity implements RecyclerView
         mContext = this;
 
         // Animation and transition handling
-        getWindow().setAllowReturnTransitionOverlap(true);
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setSharedElementExitTransition(new ChangeTransform());
+        //getWindow().setAllowReturnTransitionOverlap(true);
+        //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        //getWindow().setSharedElementExitTransition(new ChangeTransform());
 
         // Initialize layout
         setContentView(R.layout.activity_review_bill);
