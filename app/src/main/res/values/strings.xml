@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">EventManagement</string>
+    <string name="facebook_app_id">facebookAppID</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_groups">GroupsActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_invites">InvitesActivity</string>
+    <string name="title_activity_events">EventsActivity</string>
+    <string name="title_activity_bills">BillsActivity</string>
+    <string name="title_activity_debts">DebtsActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_review_bill">ReviewBillActivity</string>
+    <string name="title_activity_create_bill">CreateBillActivity</string>
+    <string name="title_activity_add_purchase">AddPurchaseActivity</string>
+    <string name="title_activity_add_users">AddUsersActivity</string>
+    <string name="unidentified">UNIDENTIFIED USER</string>
+    <string name="selected_count">SELECTION COUNT</string>
+</resources>

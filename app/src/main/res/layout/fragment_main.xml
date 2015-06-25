@@ -1,0 +1,81 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="sg.edu.nus.comp.orbital.eventmanagement.MainActivityFragment"
+    android:id="@+id/title_activity_main"
+    android:backgroundTintMode="multiply">
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/groupsButton"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:src = "@drawable/three_users_32"
+        android:onClick="manageGroups"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="false"
+        android:layout_below="@+id/imageButton"
+        android:layout_marginLeft="-5dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inviteButton"
+        android:layout_alignBottom="@+id/groupsButton"
+        android:layout_toEndOf="@+id/groupsButton"
+        android:src = "@drawable/three_users_32"
+        android:onClick="manageInvites"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/eventsButton"
+        android:layout_alignBottom="@+id/inviteButton"
+        android:layout_toEndOf="@+id/inviteButton"
+        android:src="@drawable/three_users_32"
+        android:onClick="manageEvents"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/billsButton"
+        android:layout_alignBottom="@+id/eventsButton"
+        android:layout_toEndOf="@+id/eventsButton"
+        android:src="@drawable/three_users_32"
+        android:onClick="manageBills"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/debtsButton"
+        android:layout_alignBottom="@+id/billsButton"
+        android:layout_toEndOf="@+id/billsButton"
+        android:src="@drawable/three_users_32"
+        android:onClick="manageDebts"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/settingsButton"
+        android:layout_alignBottom="@+id/debtsButton"
+        android:layout_toEndOf="@+id/debtsButton"
+        android:src="@drawable/three_users_32"
+        android:onClick="manageSettings"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/profile"
+        android:layout_alignParentTop="true" />
+
+</RelativeLayout>

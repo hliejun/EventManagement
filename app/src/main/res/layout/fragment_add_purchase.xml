@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="sg.edu.nus.comp.orbital.eventmanagement.AddPurchaseActivityFragment"
+    android:id="@+id/fragment_purchase">
+
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/addUser"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/three_users_32"
+        android:onClick="addUsers"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Item Name:"
+        android:ems="10"
+        android:id="@+id/itemName"
+        android:layout_above="@+id/itemType"
+        android:layout_alignParentStart="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/itemType"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="Item Type:"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/itemCost"
+        android:text="Unit Cost:"
+        android:layout_below="@+id/itemType"
+        android:layout_alignParentEnd="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/itemQuantity"
+        android:layout_below="@+id/itemCost"
+        android:layout_centerHorizontal="true"
+        android:text="Quantity:"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Purchase"
+        android:id="@+id/confirmCreatePurchase"
+        android:layout_below="@+id/itemQuantity"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="42dp" />
+
+
+
+</RelativeLayout>
