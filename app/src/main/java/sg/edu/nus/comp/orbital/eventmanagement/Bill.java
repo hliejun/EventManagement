@@ -876,6 +876,10 @@ class Bill implements calculationSystem {
 			}
 			sum *= gst + serviceTax + 1;
 			sum += additionalCost - discount;
+			// rounding off ...
+			sum *= 20;
+			sum = Math.floor(sum);
+			sum /= 20;
 			// userCostTable that tracks payment due for each user
 			userCostTable.put(user, sum);
 		}
@@ -930,6 +934,9 @@ class Bill implements calculationSystem {
 		return userCostTable;
 	}
 
-	// Edit Debt?
+	// Getter for Debt Database
+	public HashMap<User, Debt> getDebtDatabase() {
+		return debtDatabase;
+	}
 
 }

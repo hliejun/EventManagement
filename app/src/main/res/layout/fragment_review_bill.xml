@@ -24,7 +24,8 @@
         android:layout_marginBottom="50dp"
         android:layout_marginStart="35dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:onClick="createDebts"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -32,6 +33,7 @@
         android:text="Remind Friends"
         android:id="@+id/remindPayButton"
         android:layout_alignTop="@+id/createDebtsButton"
-        android:layout_toEndOf="@+id/createDebtsButton" />
+        android:layout_toEndOf="@+id/createDebtsButton"
+        android:onClick="remindPayment"/>
 
 </RelativeLayout>

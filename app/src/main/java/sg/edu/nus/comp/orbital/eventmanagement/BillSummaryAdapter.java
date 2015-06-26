@@ -1,5 +1,6 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.List;
 import java.util.ArrayList;
+import java.text.DecimalFormat;
 
 /*
 Custom Adapter for handling payment views (userCostView) in ReviewBillActivity.
@@ -19,6 +21,7 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
     private final UserCostPair[] userCostTable;
     // Payment mask selection for debt creation
     private SparseBooleanArray selectionMask;
+    private DecimalFormat df = new DecimalFormat("#.00");
 
     // Adapter Constructor: Initialize all inputs
     public BillSummaryAdapter(HashMap<User, Double> userCostTable) {
@@ -30,6 +33,7 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
             ++count;
         }
         this.userCostTable = tempArray;
+        selectionMask = new SparseBooleanArray();
     }
 
     // Create a view for specific entry in userCostTable
@@ -53,9 +57,13 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         UserCostViewHolder viewHolder = (UserCostViewHolder) holder;
-        viewHolder.profilePic.setImageResource(userCostTable[position].getUser().getPhotoID());
-        viewHolder.userName.setText(userCostTable[position].getUser().getUserName());
-        viewHolder.cost.setText(userCostTable[position].getCost().toString());
+        viewHolder.profilePic.setImageResource(R.drawable.small_profile);//userCostTable[position]
+        // .getUser()
+        // .getPhotoID
+        // ());
+        viewHolder.userName.setText("Name: " + userCostTable[position].getUser().getUserName());
+        viewHolder.cost.setText("Payment: $" + df.format(userCostTable[position].getCost()));
+        viewHolder.itemView.setActivated(selectionMask.get(position, false));
     }
 
     @Override

@@ -6,20 +6,19 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GestureDetectorCompat;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.os.Parcel;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.app.Activity;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.MenuInflater;
-import android.view.Window;
 import android.content.Context;
-import android.transition.ChangeTransform;
+import android.content.DialogInterface;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ import static android.view.GestureDetector.SimpleOnGestureListener;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ReviewBillActivity extends ActionBarActivity implements RecyclerView
         .OnItemTouchListener,
-        View.OnClickListener, Parcelable,
+        View.OnClickListener, //Parcelable,
         ActionMode.Callback {
 
     protected Bundle reviewBillBundle = null;
@@ -49,15 +48,15 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     BillSummaryAdapter mAdapter;
 
     // Create bill from parcel
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public ArrayList<Bill> createFromParcel(Parcel in) {
-            in.readList(billList, null);
-            return billList;
-        }
-        public Bill[] newArray(int size) {
-            return new Bill[size];
-        }
-    };
+//    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+//        public ArrayList<Bill> createFromParcel(Parcel in) {
+//            in.readList(billList, null);
+//            return billList;
+//        }
+//        public Bill[] newArray(int size) {
+//            return new Bill[size];
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,18 +72,71 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         setContentView(R.layout.activity_review_bill);
 
         // Read bill from previous activity (disable when testing this activity alone)
-        reviewBillBundle = this.getIntent().getExtras();
-        if (reviewBillBundle != null) {
-            parcel = reviewBillBundle.getParcelable("BILL_IN_REVIEW");
-            billList = (ArrayList<Bill>) CREATOR.createFromParcel(parcel);
-            if (billList != null) {
-                billInReview = billList.get(0);
-            }
-        }
+//        reviewBillBundle = this.getIntent().getExtras();
+//        if (reviewBillBundle != null) {
+//            parcel = reviewBillBundle.getParcelable("BILL_IN_REVIEW");
+//            billList = (ArrayList<Bill>) CREATOR.createFromParcel(parcel);
+//            if (billList != null) {
+//                billInReview = billList.get(0);
+//            }
+//        }
 
         //TODO: ADD FAKE BILL HERE!
+        User user01 = new User("Cecilia", "95263467");
+        User user02 = new User("Leonardo", "82560134");
+        User user03 = new User("Bieber", "83464119");
+        User user04 = new User("Aladdin", "91613543");
+        User user05 = new User("Shammu", "93151623");
+        User user06 = new User("Dennis", "81511353");
+        User user07 = new User("Seraphine", "91512415");
+        User user08 = new User("Fandi Ahmad", "81251012");
+        User user09 = new User("Unbelievable", "91632235");
+        User mPayer = new User("AH LONG", "1800 555 0000");
 
-        // ...
+        Group group = new Group();
+        group.addUser(user01);
+        group.addUser(user02);
+        group.addUser(user03);
+        group.addUser(user04);
+        group.addUser(user05);
+        group.addUser(user06);
+        group.addUser(user07);
+        group.addUser(user08);
+        group.addUser(user09);
+
+        billInReview = new Bill(group, mPayer, "Catching Bugs!");
+
+        billInReview.addItem("Sheltox", "Tools", 6.45);
+        billInReview.addItem("Noodle", "Food", 2.75);
+        billInReview.addItem("Beer", "Beverage", 4.15);
+        billInReview.addItem("Lollipop", "Snacks", 1.20);
+        billInReview.addItem("Pokeball", "Tools", 100);
+        billInReview.addItem("Green Tea", "Beverage", 2.65);
+        billInReview.addItem("Yang Chow Fried Rice", "Food", 4.45);
+        billInReview.addItem("Xian Dan Ji Ding Rice", "Food", 3.80);
+
+        ArrayList<String> sheltoxGang = new ArrayList<String>();
+        sheltoxGang.add("Leonardo");
+        sheltoxGang.add("Bieber");
+        sheltoxGang.add("Aladdin");
+
+        ArrayList<String> pgprOrders = new ArrayList<String>();
+        pgprOrders.add("Leonardo");
+        pgprOrders.add("Shammu");
+        pgprOrders.add("Dennis");
+        pgprOrders.add("Seraphine");
+        pgprOrders.add("Xian Dan Ji Ding Rice");
+        pgprOrders.add("1");
+
+        billInReview.addPurchase("Cecilia", "Lollipop", 5);
+        billInReview.addPurchase(sheltoxGang, "Sheltox", 23);
+        billInReview.addPurchase(pgprOrders);
+
+        billInReview.setList();
+
+        billInReview.costCalc();
+
+        userCostTable = billInReview.getUserCostTable();
 
         // Throw exception if cannot read bill
         if (billInReview == null) {
@@ -94,9 +146,6 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         // Get variables from Bill object received from previous activity
         eventTitle = billInReview.getEventTitle();
         userCostTable = billInReview.getUserCostTable();
-
-        // Set our view from the "main" layout resource:
-        setContentView(R.layout.activity_review_bill);
 
         // Set Layout Manager and RecyclerView
         mLayoutManager = new LinearLayoutManager(this);
@@ -115,12 +164,68 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         gestureDetector = new GestureDetectorCompat(this, new RecyclerViewDemoOnGestureListener());
     }
 
-    public void createDebts(Bill targetBill, BillSummaryAdapter adapter) {
-        //TODO: ON BUTTON CREATE DEBT, GET THE USER-COST PAIRS AND MAKE DEBTS IN TARGET BILL
+    public void createDebts(View view) {
+        List<Integer> selectionMask = mAdapter.getSelectedIndex();
+        UserCostViewHolder currentSelectedViewHolder;
+        String userName;
+        Double paidAmt = -1.0;
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        boolean failToParse = false;
+
+        for(Integer index : selectionMask) {
+            currentSelectedViewHolder = (UserCostViewHolder)mRecyclerView.getChildViewHolder(mRecyclerView.getChildAt(index));
+            userName = currentSelectedViewHolder.userName.getText().toString().substring(6, currentSelectedViewHolder.userName.getText().toString().length());
+            if (currentSelectedViewHolder.paid.getText().toString().length() == 0) {
+                failToParse = true;
+            } else {
+                paidAmt = Double.parseDouble(currentSelectedViewHolder.paid.getText().toString());
+            }
+            if (paidAmt < 0) {
+                failToParse = true;
+            } else {
+                billInReview.debtMaking(billInReview.getUserDatabase().get(userName), paidAmt);
+            }
+        }
+
+        if (failToParse) {
+            alertDialog.setMessage("Paid amount must not be empty or negative!");
+            alertDialog.setTitle("Invalid Paid Amount");
+            alertDialog.setPositiveButton("OK", null);
+            alertDialog.setCancelable(true);
+            alertDialog.create().show();
+
+            alertDialog.setPositiveButton("Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    }
+            );
+        } else if (mAdapter.getSelectionCount() == 0) {
+            alertDialog.setMessage("Please select fields by long press!");
+            alertDialog.setTitle("No item selected");
+            alertDialog.setPositiveButton("OK", null);
+            alertDialog.setCancelable(true);
+            alertDialog.create().show();
+
+            alertDialog.setPositiveButton("Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    }
+            );
+        } else {
+            for (User user : billInReview.getDebtDatabase().keySet()) {
+                Log.i("REVIEW_BILL_ACTIVITY", "Name of Debtor: " + user.getUserName());
+                Log.i("REVIEW_BILL_ACTIVITY", "Name of Loaner:" + billInReview.getDebtDatabase().get(user).getLoaner().getUserName());
+                Log.i("REVIEW_BILL_ACTIVITY", "Debt: $" + billInReview.getDebtDatabase().get(user)
+                        .getDebtAmt());
+
+            }
+        }
 
     }
 
-    public void remindPayment(Bill targetBill, BillSummaryAdapter adapter) {
+    public void remindPayment(View view) {
         //TODO: ON BUTTON REMIND, SEND REMINDER TO USERS IN LIST OF VIEWS
     }
 
@@ -128,9 +233,9 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.createDebtsButton) {
-            createDebts(billInReview, mAdapter);
+            createDebts(view);
         } else if (view.getId() == R.id.remindPayButton) {
-            remindPayment(billInReview, mAdapter);
+            remindPayment(view);
         } else if (view.getId() == R.id.userCost) {
             int index = mRecyclerView.getChildAdapterPosition(view);
             if (actionMode != null) {
@@ -160,15 +265,15 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-    }
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//
+//    }
 
     // Called when the action mode is created; startActionMode() was called
     @Override
@@ -230,7 +335,7 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
 
     private void myToggleSelection(int index) {
         mAdapter.toggleSelection(index);
-        String title = getString(R.string.selected_count, mAdapter.getSelectionCount());
+        String title = getString(R.string.select_user, mAdapter.getSelectionCount());
         actionMode.setTitle(title);
     }
 

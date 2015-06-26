@@ -5,4 +5,5 @@
     android:name="sg.edu.nus.comp.orbital.eventmanagement.ReviewBillActivityFragment"
     tools:layout="@layout/fragment_review_bill"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    tools:context="sg.edu.nus.comp.orbital.eventmanagement.ReviewBillActivity"/>

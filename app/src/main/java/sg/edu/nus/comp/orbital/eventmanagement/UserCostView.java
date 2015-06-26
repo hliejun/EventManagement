@@ -86,5 +86,17 @@ public class UserCostView  extends RelativeLayout {
             this.paid.setVisibility(View.VISIBLE);
         }
     }
+
+    public String getUserName() {
+        return userName.getText().toString();
+    }
+
+    public Double getCost() {
+        return Double.parseDouble(cost.getText().toString());
+    }
+
+    public Double getPaidAmount() {
+        return Double.parseDouble(paid.getText().toString());
+    }
 }
 
