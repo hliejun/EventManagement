@@ -901,12 +901,35 @@ class Bill implements calculationSystem {
 			if (costIncurred - paidAmt != 0) {
 				Debt newDebt = new Debt(this, payer, debtor, costIncurred,
 						paidAmt);
+				Debt prevDebt = null;
+				// If debtors and loaners swap position, it is an update action ... remove old debt
+				if (debtDatabase.get(newDebt.getLoaner()) != null) {
+					for (Debt debt : debtDatabase.get(newDebt.getLoaner())) {
+						if (debt.getLoaner().getUserName() == newDebt.getDebtor().getUserName()) {
+							prevDebt = debt;
+						}
+					}
+					if (prevDebt != null) {
+						debtDatabase.get(newDebt.getLoaner()).remove(prevDebt);
+					}
+				}
+				// If debtor has no previous debts, add anew
 				if(debtDatabase.get(newDebt.getDebtor()) == null) {
 					HashSet<Debt> debts = new HashSet<Debt>();
 					debts.add(newDebt);
 					debtDatabase.put(newDebt.getDebtor(), debts);
+				// If debtor has previous debts, check if new debt is an update, if so then
+				// replace old debt
 				} else {
 					HashSet<Debt> debts = debtDatabase.get(newDebt.getDebtor());
+					for (Debt debt : debts) {
+						if (debt.getLoaner().getUserName() == newDebt.getLoaner().getUserName()) {
+							prevDebt = debt;
+						}
+					}
+					if (prevDebt != null) {
+						debts.remove(prevDebt);
+					}
 					debts.add(newDebt);
 					debtDatabase.put(newDebt.getDebtor(), debts);
 				}

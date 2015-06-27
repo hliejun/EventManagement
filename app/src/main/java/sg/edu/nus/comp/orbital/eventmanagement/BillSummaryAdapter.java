@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.util.SparseBooleanArray;
 import android.widget.EditText;
 import android.content.Context;
+import android.view.View.OnFocusChangeListener;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -61,9 +62,7 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_costs, parent, false);
         final UserCostViewHolder holder = new UserCostViewHolder(view);
         EditText paidField = holder.paid;
-        InputMethodManager inputManager = (InputMethodManager) ContextManager.context.getSystemService(Context
-                .INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(paidField.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        OnFocusChangeListener ofcListener = new CustomFocusChangeListener();
         final TextWatcher textWatcher = new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -77,6 +76,7 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
                 }
             }
         };
+        paidField.setOnFocusChangeListener(ofcListener);
         paidField.addTextChangedListener(textWatcher);
         return holder;
     }
