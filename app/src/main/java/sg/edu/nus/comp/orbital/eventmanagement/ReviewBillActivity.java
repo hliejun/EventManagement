@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GestureDetectorCompat;
 
 import android.annotation.TargetApi;
+import android.text.Editable;
+import android.widget.EditText;
 import android.app.AlertDialog;
 import android.os.Parcel;
 import android.os.Build;
@@ -19,8 +21,10 @@ import android.view.MenuInflater;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
+import android.text.TextWatcher;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +43,9 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     protected HashMap<User, Double> userCostTable = null;
     protected Parcel parcel = null;
     protected Context mContext;
+
+    private EditText paidAmount;
+
 
     GestureDetectorCompat gestureDetector = null;
     ActionMode actionMode = null;
@@ -71,6 +78,8 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         // Initialize layout
         setContentView(R.layout.activity_review_bill);
 
+        ContextManager.context = mContext;
+
         // Read bill from previous activity (disable when testing this activity alone)
 //        reviewBillBundle = this.getIntent().getExtras();
 //        if (reviewBillBundle != null) {
@@ -80,6 +89,9 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
 //                billInReview = billList.get(0);
 //            }
 //        }
+
+//        paidAmount = (EditText) findViewById(R.id.paid);
+//        paidAmount.addTextChangedListener(textWatcher);
 
         //TODO: ADD FAKE BILL HERE!
         User user01 = new User("Cecilia", "95263467");
@@ -164,26 +176,43 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         gestureDetector = new GestureDetectorCompat(this, new RecyclerViewDemoOnGestureListener());
     }
 
+//    private final TextWatcher textWatcher = new TextWatcher() {
+//        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//        }
+//
+//        public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//        }
+//
+//        public void afterTextChanged(Editable s) {
+//
+//        }
+//    };
+
     public void createDebts(View view) {
         List<Integer> selectionMask = mAdapter.getSelectedIndex();
-        UserCostViewHolder currentSelectedViewHolder;
-        String userName;
-        Double paidAmt = -1.0;
+        UserCostPair[] userCostPair = mAdapter.getUserCostTable();
+        String[] paidAmt = mAdapter.getPaidAmount();
+        Double currPaid = -1.0;
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         boolean failToParse = false;
 
         for(Integer index : selectionMask) {
-            currentSelectedViewHolder = (UserCostViewHolder)mRecyclerView.getChildViewHolder(mRecyclerView.getChildAt(index));
-            userName = currentSelectedViewHolder.userName.getText().toString().substring(6, currentSelectedViewHolder.userName.getText().toString().length());
-            if (currentSelectedViewHolder.paid.getText().toString().length() == 0) {
+
+            if (paidAmt[index].length() == 0) {
                 failToParse = true;
             } else {
-                paidAmt = Double.parseDouble(currentSelectedViewHolder.paid.getText().toString());
+                currPaid = Double.parseDouble(paidAmt[index]);
             }
-            if (paidAmt < 0) {
+            if (currPaid < 0) {
                 failToParse = true;
+            } else if (currPaid == userCostPair[index].getCost()) {
+                // do nothing here...
             } else {
-                billInReview.debtMaking(billInReview.getUserDatabase().get(userName), paidAmt);
+               Log.i("REVIEW_BILL_ACTIVITY", userCostPair[index].getUser().getUserName());
+                Log.i("REVIEW_BILL_ACTIVITY", currPaid.toString());
+                billInReview.debtMaking(userCostPair[index].getUser(), currPaid);
             }
         }
 
@@ -215,11 +244,12 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
             );
         } else {
             for (User user : billInReview.getDebtDatabase().keySet()) {
-                Log.i("REVIEW_BILL_ACTIVITY", "Name of Debtor: " + user.getUserName());
-                Log.i("REVIEW_BILL_ACTIVITY", "Name of Loaner:" + billInReview.getDebtDatabase().get(user).getLoaner().getUserName());
-                Log.i("REVIEW_BILL_ACTIVITY", "Debt: $" + billInReview.getDebtDatabase().get(user)
-                        .getDebtAmt());
-
+                HashSet<Debt> debts = billInReview.getDebtDatabase().get(user);
+                for (Debt debt : debts) {
+                    Log.i("REVIEW_BILL_ACTIVITY", "Name of Debtor: " + user.getUserName());
+                    Log.i("REVIEW_BILL_ACTIVITY", "Name of Loaner:" + debt.getLoaner().getUserName());
+                    Log.i("REVIEW_BILL_ACTIVITY", "Debt: $" + debt.getDebtAmt());
+                }
             }
         }
 
@@ -240,7 +270,6 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
             int index = mRecyclerView.getChildAdapterPosition(view);
             if (actionMode != null) {
                 myToggleSelection(index);
-                return;
             }
         }
     }

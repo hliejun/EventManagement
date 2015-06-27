@@ -2,10 +2,15 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 
 import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.view.inputmethod.InputMethodManager;
 import android.util.SparseBooleanArray;
+import android.widget.EditText;
+import android.content.Context;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -23,6 +28,9 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
     private SparseBooleanArray selectionMask;
     private DecimalFormat df = new DecimalFormat("#.00");
 
+    private String[] paidAmount;
+    private EditText paid;
+
     // Adapter Constructor: Initialize all inputs
     public BillSummaryAdapter(HashMap<User, Double> userCostTable) {
         int count = 0;
@@ -33,6 +41,7 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
             ++count;
         }
         this.userCostTable = tempArray;
+        paidAmount = new String[userCostTable.size()];
         selectionMask = new SparseBooleanArray();
     }
 
@@ -50,19 +59,36 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_costs, parent, false);
-        return new UserCostViewHolder(view);
+        final UserCostViewHolder holder = new UserCostViewHolder(view);
+        EditText paidField = holder.paid;
+        InputMethodManager inputManager = (InputMethodManager) ContextManager.context.getSystemService(Context
+                .INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(paidField.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        final TextWatcher textWatcher = new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            public void afterTextChanged(Editable s) {
+                if (s != null) {
+                    paidAmount[holder.getAdapterPosition()] = holder.paid.getText().toString();
+                }
+            }
+        };
+        paidField.addTextChangedListener(textWatcher);
+        return holder;
     }
 
     // Initialize view holder components and associate them with their equivalent in view
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        UserCostViewHolder viewHolder = (UserCostViewHolder) holder;
-        viewHolder.profilePic.setImageResource(R.drawable.small_profile);//userCostTable[position]
-        // .getUser()
-        // .getPhotoID
-        // ());
+        final UserCostViewHolder viewHolder = (UserCostViewHolder) holder;
+        viewHolder.profilePic.setImageResource(R.drawable.small_profile);
         viewHolder.userName.setText("Name: " + userCostTable[position].getUser().getUserName());
         viewHolder.cost.setText("Payment: $" + df.format(userCostTable[position].getCost()));
+        viewHolder.paid.setText(paidAmount[position]);
         viewHolder.itemView.setActivated(selectionMask.get(position, false));
     }
 
@@ -78,7 +104,7 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
 
     // Toggles selection
     public void toggleSelection(int pos) {
-        // If key is found, delete it
+        // If key is found, set it off
         if (selectionMask.get(pos, false)) {
             selectionMask.delete(pos);
         }
@@ -117,5 +143,13 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
 
     public void removeData(int pos) {
         // Remove data here
+    }
+
+    public UserCostPair[] getUserCostTable() {
+        return userCostTable;
+    }
+
+    public String[] getPaidAmount() {
+        return paidAmount;
     }
 }

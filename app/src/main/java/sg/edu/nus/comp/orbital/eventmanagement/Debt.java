@@ -15,11 +15,11 @@ public class Debt {
 	// Constructor
 	public Debt(Bill mBill, User mLoanshark, User mDebtor, double total,
 			double paid) throws IllegalArgumentException {
-		if (bill == null || mLoanshark == null || mDebtor == null) {
+		if (mBill == null || mLoanshark == null || mDebtor == null) {
 			throw new IllegalArgumentException(
 					"Invalid argument! Debt cannot be created!");
 		}
-		if (paidAmt == costTotal || costTotal == 0) {
+		if (paid == total || total == 0) {
 			throw new IllegalArgumentException(
 					"Cost cannot be 0 or same as paid amount for debt creation!");
 		}

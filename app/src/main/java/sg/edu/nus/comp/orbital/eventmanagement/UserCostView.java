@@ -64,7 +64,7 @@ public class UserCostView  extends RelativeLayout {
         this.totalCost = (userCost != null ? userCost.getCost() : null);
         String name = debtor.getUserName();
         String cost = Double.toString(totalCost);
-        String paid = Double.toString(paidAmount);
+        String paidAmt = Double.toString(paidAmount);
 
         if (name != null) {
             userName.setText(name);
@@ -79,8 +79,8 @@ public class UserCostView  extends RelativeLayout {
             this.cost.setVisibility(View.GONE);
         }
 
-        if (paidAmount != null) {
-            this.paid.setText(paid);
+        if (paidAmt != null) {
+            this.paid.setText(paidAmt);
             this.paid.setVisibility(View.VISIBLE);
         } else {
             this.paid.setVisibility(View.VISIBLE);

@@ -11,7 +11,7 @@ class Bill implements calculationSystem {
 	protected HashMap<String, User> userDatabase = null;
 	protected HashMap<String, Item> itemDatabase = null;
 	protected HashMap<String, Purchase> purchaseDatabase = null;
-	protected HashMap<User, Debt> debtDatabase = null;
+	protected HashMap<User, HashSet<Debt>> debtDatabase = null;
 	protected HashMap<User, Double> userCostTable = null;
 	protected ListOfPurchases purchaseList = null;
 	// protected ListOfDebts debtList = null;
@@ -29,7 +29,7 @@ class Bill implements calculationSystem {
 		userDatabase = new HashMap<String, User>();
 		itemDatabase = new HashMap<String, Item>();
 		purchaseDatabase = new HashMap<String, Purchase>();
-		debtDatabase = new HashMap<User, Debt>();
+		debtDatabase = new HashMap<User, HashSet<Debt>>();
 		userCostTable = new HashMap<User, Double>();
 
 		if (group == null || mPayer == null) {
@@ -901,7 +901,15 @@ class Bill implements calculationSystem {
 			if (costIncurred - paidAmt != 0) {
 				Debt newDebt = new Debt(this, payer, debtor, costIncurred,
 						paidAmt);
-				debtDatabase.put(newDebt.getDebtor(), newDebt);
+				if(debtDatabase.get(newDebt.getDebtor()) == null) {
+					HashSet<Debt> debts = new HashSet<Debt>();
+					debts.add(newDebt);
+					debtDatabase.put(newDebt.getDebtor(), debts);
+				} else {
+					HashSet<Debt> debts = debtDatabase.get(newDebt.getDebtor());
+					debts.add(newDebt);
+					debtDatabase.put(newDebt.getDebtor(), debts);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -935,7 +943,7 @@ class Bill implements calculationSystem {
 	}
 
 	// Getter for Debt Database
-	public HashMap<User, Debt> getDebtDatabase() {
+	public HashMap<User, HashSet<Debt>> getDebtDatabase() {
 		return debtDatabase;
 	}
 
