@@ -1,0 +1,22 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bill"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/statelist_background">
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/eventTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="2dp"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true">
+    </TextView>
+
+</RelativeLayout>
