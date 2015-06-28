@@ -103,6 +103,16 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         User user07 = new User("Seraphine", "91512415");
         User user08 = new User("Fandi Ahmad", "81251012");
         User user09 = new User("Unbelievable", "91632235");
+        User user10 = new User("Terence", "92552432");
+        User user11 = new User("Courtney", "92363262");
+        User user12 = new User("Louis", "81623410");
+        User user13 = new User("Betty", "92346239");
+        User user14 = new User("Binarie", "90236899");
+        User user15 = new User("Shaunti", "98923623");
+        User user16 = new User("Denise", "81629145");
+        User user17 = new User("Thomas", "80908235");
+        User user18 = new User("Vishnu", "97078987");
+        User user19 = new User("Ridhwan", "97801249");
         User mPayer = new User("AH LONG", "1800 555 0000");
 
         Group group = new Group();
@@ -115,6 +125,16 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         group.addUser(user07);
         group.addUser(user08);
         group.addUser(user09);
+        group.addUser(user10);
+        group.addUser(user11);
+        group.addUser(user12);
+        group.addUser(user13);
+        group.addUser(user14);
+        group.addUser(user15);
+        group.addUser(user16);
+        group.addUser(user17);
+        group.addUser(user18);
+        group.addUser(user19);
 
         billInReview = new Bill(group, mPayer, "Catching Bugs!");
 
@@ -137,12 +157,27 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         pgprOrders.add("Shammu");
         pgprOrders.add("Dennis");
         pgprOrders.add("Seraphine");
+        pgprOrders.add("Terence");
+        pgprOrders.add("Courtney");
+        pgprOrders.add("Louis");
         pgprOrders.add("Xian Dan Ji Ding Rice");
-        pgprOrders.add("1");
+        pgprOrders.add("200");
+
+        ArrayList<String> lollipop = new ArrayList<String>();
+        lollipop.add("Betty");
+        lollipop.add("Binarie");
+        lollipop.add("Shaunti");
+        lollipop.add("Denise");
+        lollipop.add("Thomas");
+        lollipop.add("Vishnu");
+        lollipop.add("Ridhwan");
+        lollipop.add("Lollipop");
+        lollipop.add("500");
 
         billInReview.addPurchase("Cecilia", "Lollipop", 5);
         billInReview.addPurchase(sheltoxGang, "Sheltox", 23);
         billInReview.addPurchase(pgprOrders);
+        billInReview.addPurchase(lollipop);
 
         billInReview.setList();
 
@@ -251,12 +286,29 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
                     Log.i("REVIEW_BILL_ACTIVITY", "Debt: $" + debt.getDebtAmt());
                 }
             }
+            alertDialog.setMessage("Great! We have saved your debts! You may return to the main " +
+                    "page or edit the fields and create debts again!");
+            alertDialog.setTitle("Debts created");
+            alertDialog.setPositiveButton("OK", null);
+            alertDialog.setCancelable(true);
+            alertDialog.create().show();
+
+            alertDialog.setPositiveButton("Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    }
+            );
         }
 
     }
 
     public void remindPayment(View view) {
         //TODO: ON BUTTON REMIND, SEND REMINDER TO USERS IN LIST OF VIEWS
+    }
+
+    public void backHome(View view) {
+        finish();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -266,6 +318,8 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
             createDebts(view);
         } else if (view.getId() == R.id.remindPayButton) {
             remindPayment(view);
+        } else if (view.getId() == R.id.backToMain) {
+            backHome(view);
         } else if (view.getId() == R.id.userCost) {
             int index = mRecyclerView.getChildAdapterPosition(view);
             if (actionMode != null) {

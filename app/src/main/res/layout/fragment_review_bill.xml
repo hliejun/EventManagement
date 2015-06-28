@@ -14,18 +14,17 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/UserCostList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/createDebtsButton"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create Debts"
         android:id="@+id/createDebtsButton"
-        android:layout_marginBottom="50dp"
-        android:layout_marginStart="35dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:onClick="createDebts"/>
+        android:onClick="createDebts"
+        android:layout_alignParentBottom="true"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -35,5 +34,15 @@
         android:layout_alignTop="@+id/createDebtsButton"
         android:layout_toEndOf="@+id/createDebtsButton"
         android:onClick="remindPayment"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:id="@+id/backToMain"
+        android:layout_toEndOf="@+id/remindPayButton"
+        android:layout_alignTop="@+id/createDebtsButton"
+        android:focusableInTouchMode="false"
+        android:onClick="backHome"/>
 
 </RelativeLayout>
