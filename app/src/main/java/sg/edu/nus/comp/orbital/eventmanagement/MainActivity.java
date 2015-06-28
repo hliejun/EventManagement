@@ -59,11 +59,11 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-//    public void manageBills(View view)
-//    {
-//        Intent intent = new Intent(this, BillsActivity.class);
-//        startActivity(intent);
-//    }
+    public void manageBills(View view)
+    {
+        Intent intent = new Intent(this, BillsActivity.class);
+        startActivity(intent);
+    }
 
     public void manageDebts(View view)
     {

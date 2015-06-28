@@ -1,0 +1,73 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/purchase"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/statelist_background">
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/profilePic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"
+        android:layout_alignParentLeft="true">
+    </ImageView>
+
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="2dp"
+        android:layout_toRightOf="@+id/profilePic"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true">
+    </TextView>
+
+    <TextView
+        android:id="@+id/item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:layout_below="@+id/userName"
+        android:layout_toRightOf="@+id/profilePic">
+    </TextView>
+
+    <TextView
+        android:id="@+id/cost"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:layout_below="@+id/item"
+        android:layout_toRightOf="@+id/profilePic">
+    </TextView>
+
+    <TextView
+        android:id="@+id/quantity"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:layout_below="@+id/cost"
+        android:layout_toRightOf="@+id/profilePic">
+    </TextView>
+
+</RelativeLayout>

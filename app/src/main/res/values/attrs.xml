@@ -7,4 +7,18 @@
             <enum name="right" value="1"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="BillView">
+        <attr name="billsDisplayText" format="boolean" />
+        <attr name="billsLabelPosition" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="right" value="1"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="CreateBillView">
+        <attr name="createBillDisplayText" format="boolean" />
+        <attr name="createBillLabelPosition" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="right" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

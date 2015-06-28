@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import java.util.HashSet;
 
@@ -20,6 +21,7 @@ public class AddPurchaseActivity extends ActionBarActivity {
         setContentView(R.layout.activity_add_purchase);
 
         Button addPurchaseButton = (Button)findViewById(R.id.confirmCreatePurchase);
+        ImageButton addUserButton = (ImageButton)findViewById(R.id.addUser);
         final HashSet<User> users = new HashSet<User>();
         final EditText itemNameField = (EditText)findViewById(R.id.itemName);
         final EditText itemTypeField = (EditText)findViewById(R.id.itemType);
@@ -31,34 +33,35 @@ public class AddPurchaseActivity extends ActionBarActivity {
         addPurchaseButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        String itemName = itemNameField.getText().toString();
-                        String itemType = itemTypeField.getText().toString();
-                        double itemCost = Double.parseDouble(itemCostField.getText().toString());
-                        int itemQuantity = Integer.parseInt(itemQuantityField.getText().toString());
-
-                        if(itemName.length() == 0)
-                        {
-                            itemNameField.requestFocus();
-                            itemNameField.setError("FIELD CANNOT BE EMPTY");
-                        }
-                        else if(!itemType.matches("[a-zA-Z ]+"))
-                        {
-                            itemTypeField.requestFocus();
-                            itemTypeField.setError("ENTER ONLY ALPHABETICAL CHARACTER");
-                        }
-
-                        // ... more validations to be added.
-
-                        else
-                        {
-                            // Build Item
-                            Item newItem = new Item(itemName, itemType, itemCost);
-                            // Create Purchase here ...
-                            Purchase newPurchase = new Purchase(users, newItem, itemQuantity);
-
-                            // Pass Purchase on ...
-
-                        }
+//                        String itemName = itemNameField.getText().toString();
+//                        String itemType = itemTypeField.getText().toString();
+//                        double itemCost = Double.parseDouble(itemCostField.getText().toString());
+//                        int itemQuantity = Integer.parseInt(itemQuantityField.getText().toString());
+//
+//                        if(itemName.length() == 0)
+//                        {
+//                            itemNameField.requestFocus();
+//                            itemNameField.setError("FIELD CANNOT BE EMPTY");
+//                        }
+//                        else if(!itemType.matches("[a-zA-Z ]+"))
+//                        {
+//                            itemTypeField.requestFocus();
+//                            itemTypeField.setError("ENTER ONLY ALPHABETICAL CHARACTER");
+//                        }
+//
+//                        // ... more validations to be added.
+//
+//                        else
+//                        {
+//                            // Build Item
+//                            Item newItem = new Item(itemName, itemType, itemCost);
+//                            // Create Purchase here ...
+//                            Purchase newPurchase = new Purchase(users, newItem, itemQuantity);
+//
+//                            // Pass Purchase on ...
+//
+                              finish();
+//                        }
 
 
                     }
