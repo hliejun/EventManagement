@@ -1,5 +1,9 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +18,7 @@ import java.util.HashSet;
  * 
  * @author Huang Lie Jun
  */
-public class ListOfPurchases {
+public class ListOfPurchases implements Parcelable{
 	protected HashSet<Purchase> purchases = null;
 	protected HashMap<User, HashSet<Purchase>> userAsKey = null;
 	protected HashMap<Item, HashSet<Purchase>> itemAsKey = null;
@@ -85,13 +89,45 @@ public class ListOfPurchases {
 		}
 	}
 
+	protected ListOfPurchases(Parcel in) {
+		try {
+			Purchase[] purchaseArray;
+			purchaseArray = in.createTypedArray(Purchase.CREATOR);
+			purchases = new HashSet<Purchase>();
+			for (Purchase purchase : purchaseArray) {
+				purchases.add(purchase);
+			}
+			userAsKey = in.readHashMap(HashSet.class.getClassLoader());
+			itemAsKey = in.readHashMap(HashSet.class.getClassLoader());
+			userDatabase = in.readHashMap(User.class.getClassLoader());
+			itemDatabase = in.readHashMap(Item.class.getClassLoader());
+			purchaseDatabase = in.readHashMap(Purchase.class.getClassLoader());
+
+		} catch (Exception e) {
+			Log.e("PURCHASES PARCEL ERROR", e.toString());
+			e.printStackTrace();
+		}
+	}
+
+	public static final Creator<ListOfPurchases> CREATOR = new Creator<ListOfPurchases>() {
+		@Override
+		public ListOfPurchases createFromParcel(Parcel in) {
+			return new ListOfPurchases(in);
+		}
+
+		@Override
+		public ListOfPurchases[] newArray(int size) {
+			return new ListOfPurchases[size];
+		}
+	};
+
 	/*
-	 * Getter for purchase set
-	 * 
-	 * @return HashSet<Purchase> purchases
-	 * 
-	 * Returns a set of all purchases in this list, with no indexing
-	 */
+         * Getter for purchase set
+         *
+         * @return HashSet<Purchase> purchases
+         *
+         * Returns a set of all purchases in this list, with no indexing
+         */
 	public HashSet<Purchase> getPurchases() {
 		return purchases;
 	}
@@ -418,5 +454,21 @@ public class ListOfPurchases {
 			throw new RuntimeException("Purchase ID is NULL.");
 		}
 		return purchase.getPurchaseID();
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		Purchase[] purchaseArray = new Purchase[purchases.size()];
+		out.writeTypedArray(purchases.toArray(purchaseArray), 0);
+		out.writeMap(userAsKey);
+		out.writeMap(itemAsKey);
+		out.writeMap(userDatabase);
+		out.writeMap(itemDatabase);
+		out.writeMap(purchaseDatabase);
 	}
 }

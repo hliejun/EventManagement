@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GestureDetectorCompat;
 
 import android.annotation.TargetApi;
-import android.text.Editable;
 import android.widget.EditText;
 import android.app.AlertDialog;
 import android.os.Parcel;
@@ -21,7 +20,6 @@ import android.view.MenuInflater;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
-import android.text.TextWatcher;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -191,7 +189,7 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         }
 
         // Get variables from Bill object received from previous activity
-        eventTitle = billInReview.getEventTitle();
+        eventTitle = billInReview.getBillTitle();
         userCostTable = billInReview.getUserCostTable();
 
         // Set Layout Manager and RecyclerView
@@ -430,6 +428,11 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
 
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+    }
+
+    //@Override
+    public void onRequestDisallowInterceptTouchEvent(boolean b) {
 
     }
 }

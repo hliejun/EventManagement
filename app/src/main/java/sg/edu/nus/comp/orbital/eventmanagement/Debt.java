@@ -1,8 +1,12 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
 import java.util.HashSet;
 
-public class Debt {
+public class Debt implements Parcelable{
 	protected String debtID = null;
 	protected Bill bill = null;
 	protected User loanshark = null;
@@ -43,6 +47,38 @@ public class Debt {
 		debtID = Integer.toString(this.hashCode());
 	}
 
+	protected Debt(Parcel in) {
+		try {
+			debtID = in.readString();
+			bill = in.readParcelable(Bill.class.getClassLoader());
+			loanshark = in.readParcelable(User.class.getClassLoader());
+			debtor = in.readParcelable(User.class.getClassLoader());
+			Purchase[] purchaseArray = in.createTypedArray(Purchase.CREATOR);
+			purchases = new HashSet<Purchase>();
+			for (Purchase purchase : purchaseArray) {
+				purchases.add(purchase);
+			}
+			costTotal = in.readDouble();
+			paidAmt = in.readDouble();
+			debtAmt = in.readDouble();
+		} catch (Exception e) {
+			Log.e("DEBT PARCEL ERROR", e.toString());
+			e.printStackTrace();
+		}
+	}
+
+	public static final Creator<Debt> CREATOR = new Creator<Debt>() {
+		@Override
+		public Debt createFromParcel(Parcel in) {
+			return new Debt(in);
+		}
+
+		@Override
+		public Debt[] newArray(int size) {
+			return new Debt[size];
+		}
+	};
+
 	// Loanshark getter
 	public User getLoaner() {
 		return loanshark;
@@ -72,7 +108,25 @@ public class Debt {
 	public String getDebtID() {
 		return debtID;
 	}
-	
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(debtID);
+		out.writeParcelable(bill, flags);
+		out.writeParcelable(loanshark, flags);
+		out.writeParcelable(debtor, flags);
+		Purchase[] purchaseArray = new Purchase[purchases.size()];
+		out.writeTypedArray(purchases.toArray(purchaseArray), 0);
+		out.writeDouble(costTotal);
+		out.writeDouble(paidAmt);
+		out.writeDouble(debtAmt);
+	}
+
 	// Get information on debt (through bill)
 	// ...
 

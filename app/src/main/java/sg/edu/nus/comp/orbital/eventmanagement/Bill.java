@@ -1,20 +1,23 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 //Manual Input
-class Bill implements calculationSystem {
+class Bill implements calculationSystem, Parcelable {
 	protected String billID = null;
-	protected String eventTitle = null;
+	protected String billTitle = null;
 	protected HashMap<String, User> userDatabase = null;
 	protected HashMap<String, Item> itemDatabase = null;
 	protected HashMap<String, Purchase> purchaseDatabase = null;
 	protected HashMap<User, HashSet<Debt>> debtDatabase = null;
 	protected HashMap<User, Double> userCostTable = null;
 	protected ListOfPurchases purchaseList = null;
-	// protected ListOfDebts debtList = null;
 	protected Group userGroup = null;
 	protected User payer = null;
 	protected double subTotal = 0;
@@ -47,8 +50,44 @@ class Bill implements calculationSystem {
 		}
 
 		billID = Integer.toString(this.hashCode());
-		eventTitle = eventName;
+		billTitle = eventName;
 	}
+
+	protected Bill(Parcel in) {
+        try {
+            billID = in.readString();
+            billTitle = in.readString();
+            userDatabase = in.readHashMap(User.class.getClassLoader());
+            itemDatabase = in.readHashMap(Item.class.getClassLoader());
+            purchaseDatabase = in.readHashMap(Purchase.class.getClassLoader());
+            debtDatabase = in.readHashMap(HashSet.class.getClassLoader());
+            userCostTable = in.readHashMap(Double.class.getClassLoader());
+            purchaseList = in.readParcelable(ListOfPurchases.class.getClassLoader());
+            userGroup = in.readParcelable(Group.class.getClassLoader());
+            payer = in.readParcelable(User.class.getClassLoader());
+            subTotal = in.readDouble();
+            grandTotal = in.readDouble();
+            gst = in.readDouble();
+            serviceTax = in.readDouble();
+            additionalCost = in.readDouble();
+            discount = in.readDouble();
+        } catch (Exception e) {
+            Log.e("BILL PARCEL ERROR", e.toString());
+            e.printStackTrace();
+        }
+	}
+
+	public static final Creator<Bill> CREATOR = new Creator<Bill>() {
+		@Override
+		public Bill createFromParcel(Parcel in) {
+			return new Bill(in);
+		}
+
+		@Override
+		public Bill[] newArray(int size) {
+			return new Bill[size];
+		}
+	};
 
 	// Add User with Facebook support
 	public boolean addUser(String userName, String facebookUID,
@@ -949,14 +988,14 @@ class Bill implements calculationSystem {
 	}
 
 	// Get Event Title
-	public String getEventTitle() {
-		return eventTitle;
+	public String getBillTitle() {
+		return billTitle;
 	}
 
 	// Set Event Title
-	public void setEventTitle(String title) {
+	public void setBillTitle(String title) {
 		if(title.length() > 0) {
-			eventTitle = title;
+			billTitle = title;
 		}
 	}
 
@@ -970,4 +1009,28 @@ class Bill implements calculationSystem {
 		return debtDatabase;
 	}
 
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(billID);
+		out.writeString(billTitle);
+        out.writeMap(userDatabase);
+        out.writeMap(itemDatabase);
+        out.writeMap(purchaseDatabase);
+        out.writeMap(debtDatabase);
+        out.writeMap(userCostTable);
+		out.writeParcelable(purchaseList, flags);
+		out.writeParcelable(userGroup, flags);
+		out.writeParcelable(payer, flags);
+		out.writeDouble(subTotal);
+		out.writeDouble(grandTotal);
+		out.writeDouble(gst);
+		out.writeDouble(serviceTax);
+		out.writeDouble(additionalCost);
+		out.writeDouble(discount);
+	}
 }

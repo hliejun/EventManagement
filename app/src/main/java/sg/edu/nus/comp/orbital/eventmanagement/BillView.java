@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,7 +13,7 @@ public class BillView extends RelativeLayout {
     Bill myBill = null;
 
     // View Components
-    private TextView eventTitle;
+    private TextView billTitle;
 
     // Custom View Attributes
     boolean mShowText = false;
@@ -44,27 +41,27 @@ public class BillView extends RelativeLayout {
 
         // Initialize Components
         LayoutInflater.from(context).inflate(R.layout.bill, this, true);
-        eventTitle = (TextView) findViewById(R.id.eventTitle);
+        billTitle = (TextView) findViewById(R.id.billTitle);
     }
 
     // Set display attributes
     public void showBill(Bill bill) {
         this.myBill = bill;
-        String myBillEventTitle = myBill.getEventTitle();
+        String myBillEventTitle = myBill.getBillTitle();
 
         if (myBillEventTitle != null) {
-            eventTitle.setText(myBillEventTitle);
+            billTitle.setText(myBillEventTitle);
         } else {
-            eventTitle.setText("UNIDENTIFIED BILL");
+            billTitle.setText("UNIDENTIFIED BILL");
         }
     }
 
     public String getBillEventTitle() {
-        return eventTitle.getText().toString();
+        return billTitle.getText().toString();
     }
 
     public void setBillEventTitle(String title) {
-        eventTitle.setText(title);
+        billTitle.setText(title);
     }
 
 

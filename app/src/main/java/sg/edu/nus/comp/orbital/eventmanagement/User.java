@@ -1,6 +1,10 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
-/* 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
+/*
  * Class User
  * 
  * A user class identifies a unique single person who is involved in a purchase, or debt.
@@ -16,12 +20,12 @@ package sg.edu.nus.comp.orbital.eventmanagement;
  * 
  * @author Huang Lie Jun
  */
-public class User {
+public class User implements Parcelable {
 
 	protected String userName = null;
 	protected String facebookUID = null;
 	protected String phoneNumber = null;
-	protected final int phoneNumThresh = 5;
+	protected Integer phoneNumThresh = 5;
 	protected Integer photoID = null;
 
 	/*
@@ -71,7 +75,37 @@ public class User {
 		phoneNumber = phoneNum;
 	}
 
-	/*
+    /*
+     * Constructor (Parcelable)
+     *
+     * @param
+     *
+     *
+     */
+    protected User(Parcel in) {
+        try {
+            userName = in.readString();
+            facebookUID = in.readString();
+            phoneNumber = in.readString();
+            phoneNumThresh = in.readInt();
+            photoID = in.readInt();
+        } catch (Exception e) {
+            Log.e("USER PARCEL ERROR", e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    /*
 	 * Getter for name of user
 	 * 
 	 * @ return String userName
@@ -163,4 +197,18 @@ public class User {
 	public int getPhotoID () {
 		return photoID;
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+        out.writeString(userName);
+        out.writeString(facebookUID);
+        out.writeString(phoneNumber);
+        out.writeInt(phoneNumThresh);
+        out.writeInt(photoID);
+    }
 }

@@ -1,24 +1,14 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
-import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import android.view.inputmethod.InputMethodManager;
 import android.util.SparseBooleanArray;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.content.Context;
 import android.view.View.OnFocusChangeListener;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.List;
 import java.util.ArrayList;
-import java.text.DecimalFormat;
 
 /*
 Custom Adapter for handling bill views (billView) in BillsActivity.
@@ -39,7 +29,7 @@ public class BillsAdapter extends RecyclerView.Adapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         BillView view;
         view = (BillView) convertView;
-        view.setBillEventTitle(myBills.get(position).getEventTitle());
+        view.setBillEventTitle(myBills.get(position).getBillTitle());
         return view;
     }
 
@@ -56,7 +46,7 @@ public class BillsAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final BillViewHolder viewHolder = (BillViewHolder) holder;
-        viewHolder.billEventTitle.setText(myBills.get(position).getEventTitle());
+        viewHolder.billEventTitle.setText(myBills.get(position).getBillTitle());
         viewHolder.itemView.setActivated(selectionMask.get(position, false));
     }
 

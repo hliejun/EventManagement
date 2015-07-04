@@ -1,5 +1,9 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
 /*
  * Class Item
  * 
@@ -14,7 +18,7 @@ package sg.edu.nus.comp.orbital.eventmanagement;
  * 
  * @author Huang Lie Jun
  */
-public class Item {
+public class Item implements Parcelable{
 	protected String itemName = null;
 	protected String itemType = null;
 	protected double costPerUnit = 0;
@@ -44,7 +48,28 @@ public class Item {
 		costPerUnit = cost;
 	}
 
-	/*
+    protected Item(Parcel in) {
+        try {
+            itemName = in.readString();
+            itemType = in.readString();
+            costPerUnit = in.readDouble();
+        } catch (Exception e) {
+            Log.e("ITEM PARCEL ERROR", e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
+
+    /*
 	 * Getter for item name
 	 * 
 	 * @return String itemName
@@ -123,5 +148,17 @@ public class Item {
 		}
 		// Set cost
 		costPerUnit = cost;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+        out.writeString(itemName);
+        out.writeString(itemType);
+        out.writeDouble(costPerUnit);
 	}
 }

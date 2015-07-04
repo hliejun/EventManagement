@@ -83,6 +83,8 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         User user17 = new User("Thomas", "80908235");
         User user18 = new User("Vishnu", "97078987");
         User user19 = new User("Ridhwan", "97801249");
+        User user20 = new User("LaLa", "912314923");
+        User user21 = new User("Po", "094384928");
         User mPayer = new User("AH LONG", "1800 555 0000");
 
         Group group = new Group();
@@ -105,6 +107,8 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         group.addUser(user17);
         group.addUser(user18);
         group.addUser(user19);
+        group.addUser(user20);
+        group.addUser(user21);
 
         billInReview = new Bill(group, mPayer, "Catching Bugs!");
 
@@ -116,6 +120,8 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         billInReview.addItem("Green Tea", "Beverage", 2.65);
         billInReview.addItem("Yang Chow Fried Rice", "Food", 4.45);
         billInReview.addItem("Xian Dan Ji Ding Rice", "Food", 3.80);
+        billInReview.addItem("Chicken Rice", "Food", 3.50);
+        billInReview.addItem("Chilly Crab", "Food", 8);
 
         ArrayList<String> sheltoxGang = new ArrayList<String>();
         sheltoxGang.add("Leonardo");
@@ -145,9 +151,14 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         lollipop.add("500");
 
         billInReview.addPurchase("Cecilia", "Lollipop", 5);
-        billInReview.addPurchase(sheltoxGang, "Sheltox", 23);
-        billInReview.addPurchase(pgprOrders);
-        billInReview.addPurchase(lollipop);
+        billInReview.addPurchase("Denise", "Pokeball", 1);
+        billInReview.addPurchase("Vishnu", "Xian Dan Ji Ding Rice", 1);
+        billInReview.addPurchase("Thomas", "Beer", 1);
+        //billInReview.addPurchase(sheltoxGang, "Sheltox", 23);
+        //billInReview.addPurchase(pgprOrders);
+        //billInReview.addPurchase(lollipop);
+        billInReview.addPurchase("LaLa", "Chicken Rice", 1);
+        billInReview.addPurchase("Po", "Chilly Crab", 1);
 
         billInReview.setList();
 
@@ -281,6 +292,11 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
 
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+    }
+
+    //@Override
+    public void onRequestDisallowInterceptTouchEvent(boolean b) {
 
     }
 }

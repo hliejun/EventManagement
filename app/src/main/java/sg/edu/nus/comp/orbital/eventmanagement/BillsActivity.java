@@ -244,4 +244,9 @@ public class BillsActivity extends ActionBarActivity implements RecyclerView
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
 
     }
+
+    //@Override
+    public void onRequestDisallowInterceptTouchEvent(boolean b) {
+
+    }
 }

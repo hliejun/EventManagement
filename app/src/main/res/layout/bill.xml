@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/eventTitle"
+        android:id="@+id/billTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"

@@ -1,5 +1,9 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
 import java.util.HashSet;
 
 /*
@@ -17,7 +21,7 @@ import java.util.HashSet;
  * 
  * @author Huang Lie Jun
  */
-public class Purchase {
+public class Purchase implements Parcelable{
 	protected HashSet<User> users = new HashSet<User>();
 	protected Item item = null;
 	protected int quantity = 0;
@@ -85,13 +89,42 @@ public class Purchase {
 		purchaseID = Integer.toString(this.hashCode());
 	}
 
+	protected Purchase(Parcel in) {
+        try {
+            User[] userArray;
+            userArray = in.createTypedArray(User.CREATOR);
+            users = new HashSet<User>();
+            for (User user : userArray) {
+                users.add(user);
+            }
+            item = in.readParcelable(Item.class.getClassLoader());
+            quantity = in.readInt();
+            purchaseID = in.readString();
+        } catch (Exception e) {
+            Log.e("PURCHASE PARCEL ERROR", e.toString());
+            e.printStackTrace();
+        }
+	}
+
+	public static final Creator<Purchase> CREATOR = new Creator<Purchase>() {
+		@Override
+		public Purchase createFromParcel(Parcel in) {
+			return new Purchase(in);
+		}
+
+		@Override
+		public Purchase[] newArray(int size) {
+			return new Purchase[size];
+		}
+	};
+
 	/*
-	 * Getter for user(s) of the purchase
-	 * 
-	 * @return HashSet<User> users
-	 * 
-	 * Returns a set of users involved in the particular purchase
-	 */
+         * Getter for user(s) of the purchase
+         *
+         * @return HashSet<User> users
+         *
+         * Returns a set of users involved in the particular purchase
+         */
 	public HashSet<User> getUser() {
 		return users;
 	}
@@ -279,5 +312,19 @@ public class Purchase {
 		}
 		// Sets unique quantity of item purchased in this purchase
 		quantity = mQuantity;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+        User[] userArray = new User[users.size()];
+        out.writeTypedArray(users.toArray(userArray), 0);
+		out.writeParcelable(item, flags);
+		out.writeInt(quantity);
+		out.writeString(purchaseID);
 	}
 }
