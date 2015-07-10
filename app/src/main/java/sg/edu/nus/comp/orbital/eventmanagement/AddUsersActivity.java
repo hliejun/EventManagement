@@ -1,6 +1,7 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -127,6 +128,9 @@ public class AddUsersActivity extends Activity {
 
     public void confirmUsers(View view) {
         // Add users to purchase
+        Intent output = new Intent();
+        output.putExtra("USER_SET", selected_contacts);
+        setResult(RESULT_OK, output);
         finish();
     }
 }

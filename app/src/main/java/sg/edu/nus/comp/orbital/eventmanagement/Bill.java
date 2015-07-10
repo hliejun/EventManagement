@@ -2,24 +2,31 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+import java.text.DateFormat;
 
+import android.util.Log;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
-//Manual Input
+/*** Manual Input Bill Class ***/
+
 class Bill implements calculationSystem, Parcelable {
 	protected String billID = null;
-	protected String billTitle = null;
+	protected String billTitle = "MISCELLANEOUS";
+
+	// Databases
 	protected HashMap<String, User> userDatabase = null;
 	protected HashMap<String, Item> itemDatabase = null;
 	protected HashMap<String, Purchase> purchaseDatabase = null;
 	protected HashMap<User, HashSet<Debt>> debtDatabase = null;
 	protected HashMap<User, Double> userCostTable = null;
 	protected ListOfPurchases purchaseList = null;
+
 	protected Group userGroup = null;
 	protected User payer = null;
+
 	protected double subTotal = 0;
 	protected double grandTotal = 0;
 	protected double gst = 0.07;
@@ -27,7 +34,7 @@ class Bill implements calculationSystem, Parcelable {
 	protected double additionalCost = 0;
 	protected double discount = 0;
 
-	// Constructor
+	// Constructor with Custom Bill Title
 	public Bill(Group group, User mPayer, String eventName) throws IllegalArgumentException {
 		userDatabase = new HashMap<String, User>();
 		itemDatabase = new HashMap<String, Item>();
@@ -53,6 +60,33 @@ class Bill implements calculationSystem, Parcelable {
 		billTitle = eventName;
 	}
 
+	// Constructor with Auto Bill Title
+	public Bill(User mPayer) throws IllegalArgumentException {
+		userDatabase = new HashMap<String, User>();
+		itemDatabase = new HashMap<String, Item>();
+		purchaseDatabase = new HashMap<String, Purchase>();
+		debtDatabase = new HashMap<User, HashSet<Debt>>();
+		userCostTable = new HashMap<User, Double>();
+
+		if (mPayer == null) {
+			throw new IllegalArgumentException(
+					"Invalid argument provided! Cannot create bill!");
+		}
+
+		payer = mPayer;
+
+		if (userGroup != null) {
+			for (User user : userGroup.getUsers()) {
+				userDatabase.put(user.getUserName(), user);
+			}
+		}
+
+		userGroup = new Group();
+		billID = Integer.toString(this.hashCode());
+		billTitle = "MISC [" + DateFormat.getDateTimeInstance().format(new Date()) + "]";
+	}
+
+	// Construct from parcel (Parcelable)
 	protected Bill(Parcel in) {
         try {
             billID = in.readString();
@@ -77,6 +111,7 @@ class Bill implements calculationSystem, Parcelable {
         }
 	}
 
+	// Implementation of Parcelable Creator
 	public static final Creator<Bill> CREATOR = new Creator<Bill>() {
 		@Override
 		public Bill createFromParcel(Parcel in) {
@@ -91,7 +126,7 @@ class Bill implements calculationSystem, Parcelable {
 
 	// Add User with Facebook support
 	public boolean addUser(String userName, String facebookUID,
-			String phoneNumber, double costIncurred) {
+			String phoneNumber) {
 		if (userDatabase.get(userName) != null) {
 			throw new RuntimeException("User with this name already exists!");
 		}
@@ -106,8 +141,7 @@ class Bill implements calculationSystem, Parcelable {
 	}
 
 	// Add User without Facebook support
-	public boolean addUser(String userName, String phoneNumber,
-			double costIncurred) {
+	public boolean addUser(String userName, String phoneNumber) {
 		if (userDatabase.get(userName) != null) {
 			throw new RuntimeException("User with this name already exists!");
 		}
@@ -256,6 +290,41 @@ class Bill implements calculationSystem, Parcelable {
 			Purchase newPurchase = new Purchase(users, item, quantity);
 			String purchaseID = Integer.toString(newPurchase.hashCode());
 			purchaseDatabase.put(purchaseID, newPurchase);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	// Add multi-user Purchase to list
+	public boolean addPurchase(Purchase purchase) throws IllegalArgumentException {
+		ArrayList<String> userNames = new ArrayList<String>();
+		String itemName = null;
+		int quantity = 0;
+
+		HashSet<User> users = new HashSet<User>();
+		for (User user : purchase.getUser()) {
+			if (userDatabase.get(user.getUserName()) == null) {
+//				throw new IllegalArgumentException(
+//						"User does not exist in the database!");
+				this.addUser(user.getUserName(), user.getFacebookUID(), user.getPhoneNumber());
+			}
+			users.add(userDatabase.get(user.getUserName()));
+		}
+		if (itemDatabase.get(itemName) == null) {
+//			throw new IllegalArgumentException(
+//					"Item does not exist in the database!");
+			this.addItem(purchase.getItem().getItemName(), purchase.getItem().getItemType(),
+					purchase.getItem().getItemCost());
+		}
+		if (quantity <= 0) {
+			throw new IllegalArgumentException(
+					"Quantity must be a positive integer!");
+		}
+		Item item = itemDatabase.get(itemName);
+		try {
+			purchaseDatabase.put(purchase.getPurchaseID(), purchase);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1009,11 +1078,13 @@ class Bill implements calculationSystem, Parcelable {
 		return debtDatabase;
 	}
 
+	// Parcelable Function
 	@Override
 	public int describeContents() {
 		return 0;
 	}
 
+	// Construct Parcel
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeString(billID);

@@ -6,15 +6,17 @@ import android.util.Log;
 
 import java.util.HashSet;
 
+/*** User Group class ***/
 public class Group implements Parcelable{
-	String groupID = null;
-	HashSet<User> users = null;
+	protected String groupID = null;
+	protected HashSet<User> users = null;
 
 	// Constructor
 	public Group() {
 		users = new HashSet<User>();
 	}
 
+	// Parcelable constructor
 	protected Group(Parcel in) {
         try {
             groupID = in.readString();
@@ -30,6 +32,7 @@ public class Group implements Parcelable{
         }
 	}
 
+	// Implementation of Parcelable Creator
 	public static final Creator<Group> CREATOR = new Creator<Group>() {
 		@Override
 		public Group createFromParcel(Parcel in) {
@@ -52,16 +55,25 @@ public class Group implements Parcelable{
 		users.add(user);
 	}
 
+	// Add multiple users
+	public void addUser(User[] users) {
+		for (User user : users) {
+			this.users.add(user);
+		}
+	}
+
 	// Remove user
 	public void removeUser(User user) {
 		users.remove(user);
 	}
 
+	// Parcelable function
 	@Override
 	public int describeContents() {
 		return 0;
 	}
 
+	// Construct Parcel
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
         out.writeString(groupID);

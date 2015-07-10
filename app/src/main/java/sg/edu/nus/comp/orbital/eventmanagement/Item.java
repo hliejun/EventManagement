@@ -48,6 +48,7 @@ public class Item implements Parcelable{
 		costPerUnit = cost;
 	}
 
+	// Parcelable Constructor
     protected Item(Parcel in) {
         try {
             itemName = in.readString();
@@ -59,6 +60,7 @@ public class Item implements Parcelable{
         }
     }
 
+	// Implementation of Parcelable Creator
     public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
         public Item createFromParcel(Parcel in) {
             return new Item(in);
@@ -150,11 +152,13 @@ public class Item implements Parcelable{
 		costPerUnit = cost;
 	}
 
+	// Parcelable function
 	@Override
 	public int describeContents() {
 		return 0;
 	}
 
+	// Construct parcel
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
         out.writeString(itemName);

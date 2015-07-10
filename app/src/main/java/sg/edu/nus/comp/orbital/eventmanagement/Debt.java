@@ -6,6 +6,8 @@ import android.util.Log;
 
 import java.util.HashSet;
 
+/*** Debt class ***/
+
 public class Debt implements Parcelable{
 	protected String debtID = null;
 	protected Bill bill = null;
@@ -47,6 +49,7 @@ public class Debt implements Parcelable{
 		debtID = Integer.toString(this.hashCode());
 	}
 
+	// Parcelable Constructor
 	protected Debt(Parcel in) {
 		try {
 			debtID = in.readString();
@@ -67,6 +70,7 @@ public class Debt implements Parcelable{
 		}
 	}
 
+	// Implementation of Parcelable Creator
 	public static final Creator<Debt> CREATOR = new Creator<Debt>() {
 		@Override
 		public Debt createFromParcel(Parcel in) {
@@ -109,11 +113,13 @@ public class Debt implements Parcelable{
 		return debtID;
 	}
 
+	// Parcelable function
 	@Override
 	public int describeContents() {
 		return 0;
 	}
 
+	// Construct Parcel
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeString(debtID);
@@ -126,8 +132,5 @@ public class Debt implements Parcelable{
 		out.writeDouble(paidAmt);
 		out.writeDouble(debtAmt);
 	}
-
-	// Get information on debt (through bill)
-	// ...
 
 }

@@ -7,9 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GestureDetectorCompat;
 
 import android.annotation.TargetApi;
-import android.text.Editable;
-import android.widget.EditText;
-import android.app.AlertDialog;
 import android.os.Parcel;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,35 +16,27 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.MenuInflater;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
-import android.text.TextWatcher;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.List;
-
 import static android.view.GestureDetector.SimpleOnGestureListener;
+import android.content.Context;
 
+import java.util.ArrayList;
+
+/*** Browsing activity for existing bills, and option to add new misc. bill ***/
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BillsActivity extends ActionBarActivity implements RecyclerView
         .OnItemTouchListener,
-        View.OnClickListener, //Parcelable,
+        View.OnClickListener,
         ActionMode.Callback {
 
-    protected Bundle billBundle = null;
     protected ArrayList<Bill> myBills = new ArrayList<Bill>();
-    protected Parcel parcel = null;
     protected Context mContext;
 
-    GestureDetectorCompat gestureDetector = null;
-    ActionMode actionMode = null;
+    protected GestureDetectorCompat gestureDetector = null;
+    protected ActionMode actionMode = null;
 
-    RecyclerView mRecyclerView;
-    RecyclerView.LayoutManager mLayoutManager;
-    BillsAdapter mAdapter;
+    protected RecyclerView mRecyclerView;
+    protected RecyclerView.LayoutManager mLayoutManager;
+    protected BillsAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +45,11 @@ public class BillsActivity extends ActionBarActivity implements RecyclerView
 
         // Initialize layout
         setContentView(R.layout.activity_bills);
-
         ContextManager.context = mContext;
 
-        // Dummy Bills Array
+        //TODO: Load events and bills from database
 
+        // Dummy Bills Array
         User user01 = new User("Cecilia", "95263467");
         User user02 = new User("Leonardo", "82560134");
         User user03 = new User("Bieber", "83464119");
@@ -124,27 +113,30 @@ public class BillsActivity extends ActionBarActivity implements RecyclerView
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        // Instantiate the adapter and pass in its data source:
+        // Instantiate the adapter and pass in its data source
         mAdapter = new BillsAdapter(myBills);
 
         // Plug the adapter into the RecyclerView:
         mRecyclerView.setAdapter(mAdapter);
 
+        // Gesture detection
         mRecyclerView.addOnItemTouchListener(this);
         gestureDetector = new GestureDetectorCompat(this, new RecyclerViewDemoOnGestureListener());
     }
 
-
+    // Create a new miscellaneous bill
     public void createBill(View view) {
         Intent intent = new Intent(this, CreateBillActivity.class);
-        startActivity(intent);
+        intent.putExtra("FROM_ACTIVITY", "BillsActivity");
+        startActivityForResult(intent, 0);
     }
 
+    // Terminate and return to home without results
     public void backHome(View view) {
         finish();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    // Gesture control
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.createBillButton) {
@@ -159,6 +151,7 @@ public class BillsActivity extends ActionBarActivity implements RecyclerView
         }
     }
 
+    // -------- START: Action bar control --------//
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -207,6 +200,10 @@ public class BillsActivity extends ActionBarActivity implements RecyclerView
         mAdapter.clearSelections();
     }
 
+    // -------- ^^^ END: Action bar control ^^^ --------//
+
+
+    // -------- START: Recycler selection control --------//
     private class RecyclerViewDemoOnGestureListener extends SimpleOnGestureListener {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
@@ -248,5 +245,30 @@ public class BillsActivity extends ActionBarActivity implements RecyclerView
     //@Override
     public void onRequestDisallowInterceptTouchEvent(boolean b) {
 
+    }
+
+    // -------- ^^^ END: Recycler selection control ^^^ --------//
+
+
+    // Handles return of new miscellaneous bill created
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (0) : {
+                if (resultCode == ReviewBillActivity.RESULT_OK) {
+                    try {
+                        Bundle bundle = data.getExtras();
+                        Bill bill = bundle.getParcelable("NEW_BILL");
+
+                        //TODO: Add Bill to database, notify dataset changes
+
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
+        }
     }
 }

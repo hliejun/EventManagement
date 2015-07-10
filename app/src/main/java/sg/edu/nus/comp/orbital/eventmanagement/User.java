@@ -63,9 +63,9 @@ public class User implements Parcelable {
 		if (name == null || name.length() <= 0) {
 			throw new IllegalArgumentException("Invalid Username Input!");
 		}
-		if (facebookIden == null || facebookIden.length() <= 0) {
-			throw new IllegalArgumentException("Invalid Facebook UID Input!");
-		}
+//		if (facebookIden == null || facebookIden.length() <= 0) {
+//			throw new IllegalArgumentException("Invalid Facebook UID Input!");
+//		}
 		if (phoneNum == null || phoneNum.length() < phoneNumThresh) {
 			throw new IllegalArgumentException("Invalid Phone Number Input!");
 		}
@@ -95,6 +95,7 @@ public class User implements Parcelable {
         }
     }
 
+	// Implementation of Parcelable Creator
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         public User createFromParcel(Parcel in) {
             return new User(in);

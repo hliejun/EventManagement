@@ -1,5 +1,6 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,9 +32,8 @@ import static android.view.GestureDetector.SimpleOnGestureListener;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ReviewBillActivity extends ActionBarActivity implements RecyclerView
         .OnItemTouchListener,
-        View.OnClickListener, //Parcelable,
+        View.OnClickListener,
         ActionMode.Callback {
-
     protected Bundle reviewBillBundle = null;
     protected static ArrayList<Bill> billList = null;
     protected Bill billInReview = null;
@@ -67,6 +67,10 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        billInReview = bundle.getParcelable("NEW_BILL");
+
 
         // Animation and transition handling
         //getWindow().setAllowReturnTransitionOverlap(true);
@@ -91,91 +95,91 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
 //        paidAmount = (EditText) findViewById(R.id.paid);
 //        paidAmount.addTextChangedListener(textWatcher);
 
-        //TODO: ADD FAKE BILL HERE!
-        User user01 = new User("Cecilia", "95263467");
-        User user02 = new User("Leonardo", "82560134");
-        User user03 = new User("Bieber", "83464119");
-        User user04 = new User("Aladdin", "91613543");
-        User user05 = new User("Shammu", "93151623");
-        User user06 = new User("Dennis", "81511353");
-        User user07 = new User("Seraphine", "91512415");
-        User user08 = new User("Fandi Ahmad", "81251012");
-        User user09 = new User("Unbelievable", "91632235");
-        User user10 = new User("Terence", "92552432");
-        User user11 = new User("Courtney", "92363262");
-        User user12 = new User("Louis", "81623410");
-        User user13 = new User("Betty", "92346239");
-        User user14 = new User("Binarie", "90236899");
-        User user15 = new User("Shaunti", "98923623");
-        User user16 = new User("Denise", "81629145");
-        User user17 = new User("Thomas", "80908235");
-        User user18 = new User("Vishnu", "97078987");
-        User user19 = new User("Ridhwan", "97801249");
-        User mPayer = new User("AH LONG", "1800 555 0000");
-
-        Group group = new Group();
-        group.addUser(user01);
-        group.addUser(user02);
-        group.addUser(user03);
-        group.addUser(user04);
-        group.addUser(user05);
-        group.addUser(user06);
-        group.addUser(user07);
-        group.addUser(user08);
-        group.addUser(user09);
-        group.addUser(user10);
-        group.addUser(user11);
-        group.addUser(user12);
-        group.addUser(user13);
-        group.addUser(user14);
-        group.addUser(user15);
-        group.addUser(user16);
-        group.addUser(user17);
-        group.addUser(user18);
-        group.addUser(user19);
-
-        billInReview = new Bill(group, mPayer, "Catching Bugs!");
-
-        billInReview.addItem("Sheltox", "Tools", 6.45);
-        billInReview.addItem("Noodle", "Food", 2.75);
-        billInReview.addItem("Beer", "Beverage", 4.15);
-        billInReview.addItem("Lollipop", "Snacks", 1.20);
-        billInReview.addItem("Pokeball", "Tools", 100);
-        billInReview.addItem("Green Tea", "Beverage", 2.65);
-        billInReview.addItem("Yang Chow Fried Rice", "Food", 4.45);
-        billInReview.addItem("Xian Dan Ji Ding Rice", "Food", 3.80);
-
-        ArrayList<String> sheltoxGang = new ArrayList<String>();
-        sheltoxGang.add("Leonardo");
-        sheltoxGang.add("Bieber");
-        sheltoxGang.add("Aladdin");
-
-        ArrayList<String> pgprOrders = new ArrayList<String>();
-        pgprOrders.add("Leonardo");
-        pgprOrders.add("Shammu");
-        pgprOrders.add("Dennis");
-        pgprOrders.add("Seraphine");
-        pgprOrders.add("Terence");
-        pgprOrders.add("Courtney");
-        pgprOrders.add("Louis");
-        pgprOrders.add("Xian Dan Ji Ding Rice");
-        pgprOrders.add("200");
-
-        ArrayList<String> lollipop = new ArrayList<String>();
-        lollipop.add("Betty");
-        lollipop.add("Binarie");
-        lollipop.add("Shaunti");
-        lollipop.add("Denise");
-        lollipop.add("Thomas");
-        lollipop.add("Vishnu");
-        lollipop.add("Ridhwan");
-        lollipop.add("Lollipop");
-        lollipop.add("500");
-
-        billInReview.addPurchase("Cecilia", "Lollipop", 5);
-        billInReview.addPurchase(sheltoxGang, "Sheltox", 23);
-        billInReview.addPurchase(pgprOrders);
-        billInReview.addPurchase(lollipop);
+//        //TODO: ADD FAKE BILL HERE!
+//        User user01 = new User("Cecilia", "95263467");
+//        User user02 = new User("Leonardo", "82560134");
+//        User user03 = new User("Bieber", "83464119");
+//        User user04 = new User("Aladdin", "91613543");
+//        User user05 = new User("Shammu", "93151623");
+//        User user06 = new User("Dennis", "81511353");
+//        User user07 = new User("Seraphine", "91512415");
+//        User user08 = new User("Fandi Ahmad", "81251012");
+//        User user09 = new User("Unbelievable", "91632235");
+//        User user10 = new User("Terence", "92552432");
+//        User user11 = new User("Courtney", "92363262");
+//        User user12 = new User("Louis", "81623410");
+//        User user13 = new User("Betty", "92346239");
+//        User user14 = new User("Binarie", "90236899");
+//        User user15 = new User("Shaunti", "98923623");
+//        User user16 = new User("Denise", "81629145");
+//        User user17 = new User("Thomas", "80908235");
+//        User user18 = new User("Vishnu", "97078987");
+//        User user19 = new User("Ridhwan", "97801249");
+//        User mPayer = new User("AH LONG", "1800 555 0000");
+//
+//        Group group = new Group();
+//        group.addUser(user01);
+//        group.addUser(user02);
+//        group.addUser(user03);
+//        group.addUser(user04);
+//        group.addUser(user05);
+//        group.addUser(user06);
+//        group.addUser(user07);
+//        group.addUser(user08);
+//        group.addUser(user09);
+//        group.addUser(user10);
+//        group.addUser(user11);
+//        group.addUser(user12);
+//        group.addUser(user13);
+//        group.addUser(user14);
+//        group.addUser(user15);
+//        group.addUser(user16);
+//        group.addUser(user17);
+//        group.addUser(user18);
+//        group.addUser(user19);
+//
+//        billInReview = new Bill(group, mPayer, "Catching Bugs!");
+//
+//        billInReview.addItem("Sheltox", "Tools", 6.45);
+//        billInReview.addItem("Noodle", "Food", 2.75);
+//        billInReview.addItem("Beer", "Beverage", 4.15);
+//        billInReview.addItem("Lollipop", "Snacks", 1.20);
+//        billInReview.addItem("Pokeball", "Tools", 100);
+//        billInReview.addItem("Green Tea", "Beverage", 2.65);
+//        billInReview.addItem("Yang Chow Fried Rice", "Food", 4.45);
+//        billInReview.addItem("Xian Dan Ji Ding Rice", "Food", 3.80);
+//
+//        ArrayList<String> sheltoxGang = new ArrayList<String>();
+//        sheltoxGang.add("Leonardo");
+//        sheltoxGang.add("Bieber");
+//        sheltoxGang.add("Aladdin");
+//
+//        ArrayList<String> pgprOrders = new ArrayList<String>();
+//        pgprOrders.add("Leonardo");
+//        pgprOrders.add("Shammu");
+//        pgprOrders.add("Dennis");
+//        pgprOrders.add("Seraphine");
+//        pgprOrders.add("Terence");
+//        pgprOrders.add("Courtney");
+//        pgprOrders.add("Louis");
+//        pgprOrders.add("Xian Dan Ji Ding Rice");
+//        pgprOrders.add("200");
+//
+//        ArrayList<String> lollipop = new ArrayList<String>();
+//        lollipop.add("Betty");
+//        lollipop.add("Binarie");
+//        lollipop.add("Shaunti");
+//        lollipop.add("Denise");
+//        lollipop.add("Thomas");
+//        lollipop.add("Vishnu");
+//        lollipop.add("Ridhwan");
+//        lollipop.add("Lollipop");
+//        lollipop.add("500");
+//
+//        billInReview.addPurchase("Cecilia", "Lollipop", 5);
+//        billInReview.addPurchase(sheltoxGang, "Sheltox", 23);
+//        billInReview.addPurchase(pgprOrders);
+//        billInReview.addPurchase(lollipop);
 
         billInReview.setList();
 
@@ -306,6 +310,9 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     }
 
     public void backHome(View view) {
+
+        // Pass back bill!!!
+
         finish();
     }
 

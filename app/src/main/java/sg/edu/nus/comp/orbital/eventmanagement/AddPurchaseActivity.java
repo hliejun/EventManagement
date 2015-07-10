@@ -11,9 +11,12 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class AddPurchaseActivity extends ActionBarActivity {
+
+    protected HashSet<User> users = new HashSet<User>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +25,6 @@ public class AddPurchaseActivity extends ActionBarActivity {
 
         Button addPurchaseButton = (Button)findViewById(R.id.confirmCreatePurchase);
         ImageButton addUserButton = (ImageButton)findViewById(R.id.addUser);
-        final HashSet<User> users = new HashSet<User>();
         final EditText itemNameField = (EditText)findViewById(R.id.itemName);
         final EditText itemTypeField = (EditText)findViewById(R.id.itemType);
         final EditText itemCostField = (EditText)findViewById(R.id.itemCost);
@@ -33,35 +35,41 @@ public class AddPurchaseActivity extends ActionBarActivity {
         addPurchaseButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-//                        String itemName = itemNameField.getText().toString();
-//                        String itemType = itemTypeField.getText().toString();
-//                        double itemCost = Double.parseDouble(itemCostField.getText().toString());
-//                        int itemQuantity = Integer.parseInt(itemQuantityField.getText().toString());
-//
-//                        if(itemName.length() == 0)
-//                        {
-//                            itemNameField.requestFocus();
-//                            itemNameField.setError("FIELD CANNOT BE EMPTY");
-//                        }
-//                        else if(!itemType.matches("[a-zA-Z ]+"))
-//                        {
-//                            itemTypeField.requestFocus();
-//                            itemTypeField.setError("ENTER ONLY ALPHABETICAL CHARACTER");
-//                        }
-//
-//                        // ... more validations to be added.
-//
-//                        else
-//                        {
-//                            // Build Item
-//                            Item newItem = new Item(itemName, itemType, itemCost);
-//                            // Create Purchase here ...
-//                            Purchase newPurchase = new Purchase(users, newItem, itemQuantity);
-//
-//                            // Pass Purchase on ...
-//
-                              finish();
-//                        }
+                        String itemName = itemNameField.getText().toString();
+                        String itemType = itemTypeField.getText().toString();
+                        double itemCost = Double.parseDouble(itemCostField.getText().toString());
+                        int itemQuantity = Integer.parseInt(itemQuantityField.getText().toString());
+
+                        if(itemName.length() == 0)
+                        {
+                            itemNameField.requestFocus();
+                            itemNameField.setError("FIELD CANNOT BE EMPTY");
+                        }
+                        else if(!itemType.matches("[a-zA-Z ]+"))
+                        {
+                            itemTypeField.requestFocus();
+                            itemTypeField.setError("ENTER ONLY ALPHABETICAL CHARACTER");
+                        }
+
+                        // ... more validations to be added.
+
+                        else
+                        {
+                            try {
+                                // Build Item
+                                Item newItem = new Item(itemName, itemType, itemCost);
+                                // Create Purchase here ...
+                                Purchase newPurchase = new Purchase(users, newItem, itemQuantity);
+
+                                // Pass Purchase on ...
+                                Intent output = new Intent();
+                                output.putExtra("NEW_PURCHASE", newPurchase);
+                                setResult(RESULT_OK, output);
+                                finish();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
 
 
                     }
@@ -95,7 +103,28 @@ public class AddPurchaseActivity extends ActionBarActivity {
     public void addUsers(View view)
     {
         Intent intent = new Intent(this, AddUsersActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (0) : {
+                if (resultCode == AddUsersActivity.RESULT_OK) {
+                    try {
+                        Bundle bundle = data.getExtras();
+                        ArrayList<User> userArray = bundle.getParcelableArrayList("USER_SET");
+                        for (User user : userArray) {
+                            users.add(user);
+                        }
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                break;
+            }
+        }
+    }
 }

@@ -7,9 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GestureDetectorCompat;
 
 import android.annotation.TargetApi;
-import android.text.Editable;
-import android.widget.EditText;
-import android.app.AlertDialog;
 import android.os.Parcel;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,38 +16,31 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.MenuInflater;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
-import android.text.TextWatcher;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.List;
-
 import static android.view.GestureDetector.SimpleOnGestureListener;
+import android.content.Context;
+import android.util.Log;
 
+import java.util.ArrayList;
+
+// Create a new bill:
+//  - can be miscellaneous (if from BillsActivity)
+//  - or event-based (if from EventActivity)
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class CreateBillActivity extends ActionBarActivity implements RecyclerView
         .OnItemTouchListener,
-        View.OnClickListener, //Parcelable,
+        View.OnClickListener,
         ActionMode.Callback {
-
-    protected Bundle billBundle = null;
 
     protected ListOfPurchases myPurchases = null;
     protected Bill billInReview = null;
-
-    protected Parcel parcel = null;
     protected Context mContext;
 
-    GestureDetectorCompat gestureDetector = null;
-    ActionMode actionMode = null;
+    protected GestureDetectorCompat gestureDetector = null;
+    protected ActionMode actionMode = null;
 
-    RecyclerView mRecyclerView;
-    RecyclerView.LayoutManager mLayoutManager;
-    CreateBillAdapter mAdapter;
+    protected RecyclerView mRecyclerView;
+    protected RecyclerView.LayoutManager mLayoutManager;
+    protected CreateBillAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,74 +49,84 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
 
         // Initialize layout
         setContentView(R.layout.activity_create_bill);
-
         ContextManager.context = mContext;
 
         // Dummy Purchases Array
+//        User user01 = new User("Cecilia", "95263467");
+//        User user02 = new User("Leonardo", "82560134");
+//        User user03 = new User("Bieber", "83464119");
+//        User user04 = new User("Aladdin", "91613543");
+//        User user05 = new User("Shammu", "93151623");
+//        User user06 = new User("Dennis", "81511353");
+//        User user07 = new User("Seraphine", "91512415");
+//        User user08 = new User("Fandi Ahmad", "81251012");
+//        User user09 = new User("Unbelievable", "91632235");
+//        User user10 = new User("Terence", "92552432");
+//        User user11 = new User("Courtney", "92363262");
+//        User user12 = new User("Louis", "81623410");
+//        User user13 = new User("Betty", "92346239");
+//        User user14 = new User("Binarie", "90236899");
+//        User user15 = new User("Shaunti", "98923623");
+//        User user16 = new User("Denise", "81629145");
+//        User user17 = new User("Thomas", "80908235");
+//        User user18 = new User("Vishnu", "97078987");
+//        User user19 = new User("Ridhwan", "97801249");
+//        User user20 = new User("LaLa", "912314923");
+//        User user21 = new User("Po", "094384928");
+//        User mPayer = new User("AH LONG", "1800 555 0000");
+//
+//        Group group = new Group();
+//        group.addUser(user01);
+//        group.addUser(user02);
+//        group.addUser(user03);
+//        group.addUser(user04);
+//        group.addUser(user05);
+//        group.addUser(user06);
+//        group.addUser(user07);
+//        group.addUser(user08);
+//        group.addUser(user09);
+//        group.addUser(user10);
+//        group.addUser(user11);
+//        group.addUser(user12);
+//        group.addUser(user13);
+//        group.addUser(user14);
+//        group.addUser(user15);
+//        group.addUser(user16);
+//        group.addUser(user17);
+//        group.addUser(user18);
+//        group.addUser(user19);
+//        group.addUser(user20);
+//        group.addUser(user21);
 
-        User user01 = new User("Cecilia", "95263467");
-        User user02 = new User("Leonardo", "82560134");
-        User user03 = new User("Bieber", "83464119");
-        User user04 = new User("Aladdin", "91613543");
-        User user05 = new User("Shammu", "93151623");
-        User user06 = new User("Dennis", "81511353");
-        User user07 = new User("Seraphine", "91512415");
-        User user08 = new User("Fandi Ahmad", "81251012");
-        User user09 = new User("Unbelievable", "91632235");
-        User user10 = new User("Terence", "92552432");
-        User user11 = new User("Courtney", "92363262");
-        User user12 = new User("Louis", "81623410");
-        User user13 = new User("Betty", "92346239");
-        User user14 = new User("Binarie", "90236899");
-        User user15 = new User("Shaunti", "98923623");
-        User user16 = new User("Denise", "81629145");
-        User user17 = new User("Thomas", "80908235");
-        User user18 = new User("Vishnu", "97078987");
-        User user19 = new User("Ridhwan", "97801249");
-        User user20 = new User("LaLa", "912314923");
-        User user21 = new User("Po", "094384928");
-        User mPayer = new User("AH LONG", "1800 555 0000");
+        Intent intent = getIntent();
+        String previousActivity = intent.getStringExtra("FROM_ACTIVITY");
+        switch(previousActivity) {
+            case "BillsActivity":
+                User mPayer = new User("AH LONG", "1800 555 0000");
+                billInReview = new Bill(mPayer);
+                break;
+            default:
+                Log.d("CREATE_BILL_ACTIVITY", "Error constructing bill!");
+                break;
+        }
 
-        Group group = new Group();
-        group.addUser(user01);
-        group.addUser(user02);
-        group.addUser(user03);
-        group.addUser(user04);
-        group.addUser(user05);
-        group.addUser(user06);
-        group.addUser(user07);
-        group.addUser(user08);
-        group.addUser(user09);
-        group.addUser(user10);
-        group.addUser(user11);
-        group.addUser(user12);
-        group.addUser(user13);
-        group.addUser(user14);
-        group.addUser(user15);
-        group.addUser(user16);
-        group.addUser(user17);
-        group.addUser(user18);
-        group.addUser(user19);
-        group.addUser(user20);
-        group.addUser(user21);
+        //TODO: Retrieve mPayer from database, or set as global from start
 
-        billInReview = new Bill(group, mPayer, "Catching Bugs!");
-
-        billInReview.addItem("Sheltox", "Tools", 6.45);
-        billInReview.addItem("Noodle", "Food", 2.75);
-        billInReview.addItem("Beer", "Beverage", 4.15);
-        billInReview.addItem("Lollipop", "Snacks", 1.20);
-        billInReview.addItem("Pokeball", "Tools", 100);
-        billInReview.addItem("Green Tea", "Beverage", 2.65);
-        billInReview.addItem("Yang Chow Fried Rice", "Food", 4.45);
-        billInReview.addItem("Xian Dan Ji Ding Rice", "Food", 3.80);
-        billInReview.addItem("Chicken Rice", "Food", 3.50);
-        billInReview.addItem("Chilly Crab", "Food", 8);
-
-        ArrayList<String> sheltoxGang = new ArrayList<String>();
-        sheltoxGang.add("Leonardo");
-        sheltoxGang.add("Bieber");
-        sheltoxGang.add("Aladdin");
+//        billInReview.addItem("Sheltox", "Tools", 6.45);
+//        billInReview.addItem("Noodle", "Food", 2.75);
+//        billInReview.addItem("Beer", "Beverage", 4.15);
+//        billInReview.addItem("Lollipop", "Snacks", 1.20);
+//        billInReview.addItem("Pokeball", "Tools", 100);
+//        billInReview.addItem("Green Tea", "Beverage", 2.65);
+//        billInReview.addItem("Yang Chow Fried Rice", "Food", 4.45);
+//        billInReview.addItem("Xian Dan Ji Ding Rice", "Food", 3.80);
+//        billInReview.addItem("Chicken Rice", "Food", 3.50);
+//        billInReview.addItem("Chilly Crab", "Food", 8);
+//
+//        ArrayList<String> sheltoxGang = new ArrayList<String>();
+//        sheltoxGang.add("Leonardo");
+//        sheltoxGang.add("Bieber");
+//        sheltoxGang.add("Aladdin");
 
         ArrayList<String> pgprOrders = new ArrayList<String>();
         pgprOrders.add("Leonardo");
@@ -185,11 +185,14 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
 
     public void addPurchase(View view) {
         Intent intent = new Intent(this, AddPurchaseActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
     }
 
     public void confirmBill(View view) {
         Intent intent = new Intent(this, ReviewBillActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("NEW_BILL", billInReview);
+        intent.putExtras(bundle);
         finish();
         startActivity(intent);
     }
@@ -298,5 +301,24 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
     //@Override
     public void onRequestDisallowInterceptTouchEvent(boolean b) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (0) : {
+                if (resultCode == AddPurchaseActivity.RESULT_OK) {
+                    try {
+                        Bundle bundle = data.getExtras();
+                        Purchase purchase = bundle.getParcelable("NEW_PURCHASE");
+                        billInReview.addPurchase(purchase);
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
+        }
     }
 }

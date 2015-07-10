@@ -89,6 +89,7 @@ public class Purchase implements Parcelable{
 		purchaseID = Integer.toString(this.hashCode());
 	}
 
+	// Parcelable Constructor
 	protected Purchase(Parcel in) {
         try {
             User[] userArray;
@@ -314,11 +315,13 @@ public class Purchase implements Parcelable{
 		quantity = mQuantity;
 	}
 
+	// Parcelable function
 	@Override
 	public int describeContents() {
 		return 0;
 	}
 
+	// Construct Parcel
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
         User[] userArray = new User[users.size()];
