@@ -1,6 +1,8 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
-import android.app.Activity;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -19,90 +21,42 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public class AddUsersActivity extends Activity {
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private ArrayList<String> name_ref;
-    private ArrayList<String> phone_ref ;
+public class AddUsersActivity extends AppCompatActivity {
 
-    private ArrayList<User> selected_contacts = new ArrayList<>();
-
-    public ArrayList<String> getContact(){
-        Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null,null, null);
-        ArrayList<String> contacts = new ArrayList<String>();
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-
-            do {
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                contacts.add(name);
-            } while (cursor.moveToNext());
-        }
-        return contacts;
-    }
-
-    public String matchPhoneByName(String name){
-        int pos = -1;
-        for(int c = 0; c<=name_ref.size()-1;c++){
-            if(name.equals(name_ref.get(c))){
-                pos = c;
-                break;
-            }
-        }
-        return phone_ref.get(pos);
-    }
-
-    public ArrayList<String> getNumber(){
-        Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null,null, null);
-        ArrayList<String> numbers = new ArrayList<String>();
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-
-            do {
-                String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                numbers.add(number);
-            } while (cursor.moveToNext());
-        }
-        return numbers;
-    }
-
-    public void doStuff(View view){
-        TextView tv = (TextView) view.findViewById(R.id.item);
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setSelected(!v.isSelected());
-            }
-        });
-        if(tv.isSelected()){
-            String person_name = tv.getText().toString();
-            String person_phone = matchPhoneByName(person_name);
-            User user = new User(person_name, person_phone);
-            selected_contacts.add(user);
-        }else if(!tv.isSelected() && selected_contacts.size()!=0){
-            String person_name = tv.getText().toString();
-            for(int c = 0; c<= selected_contacts.size()-1;c++){
-                if(selected_contacts.get(c).getUserName().equals(person_name)){
-                    selected_contacts.remove(c);
-                }
-            }
-        }
-    }
+    protected ArrayList<User> selected_contacts = new ArrayList<>();
+    protected ViewPager viewPager;
+    protected TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_users);
-        name_ref = this.getContact();
-        phone_ref=this.getNumber();
-        recyclerView = (RecyclerView) findViewById(R.id.add_users_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new AddUsersAdapter(getContact());
-        recyclerView.setAdapter(adapter);
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        AddUsersFragmentPagerAdapter adapter = new AddUsersFragmentPagerAdapter(getSupportFragmentManager(),
+                AddUsersActivity.this);
+        adapter.addFragment(new AddUserGroupFragment(), "Group");
+        adapter.addFragment(new AddUserSingleFragment(), "User");
+        adapter.addFragment(new AddUserContactListFragment(), "Contacts");
+        viewPager.setAdapter(adapter);
 
+        // Give the TabLayout the ViewPager
+        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override

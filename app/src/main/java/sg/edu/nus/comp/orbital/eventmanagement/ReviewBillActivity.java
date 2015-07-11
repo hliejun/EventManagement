@@ -8,7 +8,7 @@ import android.support.v4.view.GestureDetectorCompat;
 
 import android.annotation.TargetApi;
 import android.widget.EditText;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.os.Parcel;
 import android.os.Build;
 import android.os.Bundle;

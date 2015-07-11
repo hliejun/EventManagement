@@ -1,5 +1,7 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.support.v7.app.AppCompatActivity;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -35,7 +37,7 @@ import com.facebook.FacebookSdk;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * A dummy authentication store containing known user names and passwords.

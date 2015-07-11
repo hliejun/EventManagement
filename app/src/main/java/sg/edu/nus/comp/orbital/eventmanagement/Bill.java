@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /*** Manual Input Bill Class ***/
-
 class Bill implements calculationSystem, Parcelable {
 	protected String billID = null;
 	protected String billTitle = "MISCELLANEOUS";
