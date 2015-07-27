@@ -9,10 +9,15 @@ import java.util.HashSet;
 /*** User Group class ***/
 public class Group implements Parcelable{
 	protected String groupID = null;
+	protected String groupName = null;
 	protected HashSet<User> users = null;
 
 	// Constructor
-	public Group() {
+	public Group(String name) throws IllegalArgumentException {
+		if (name == null) {
+			throw new IllegalArgumentException("Invalid group name!");
+		}
+		groupName = name;
 		users = new HashSet<User>();
 	}
 
@@ -20,6 +25,7 @@ public class Group implements Parcelable{
 	protected Group(Parcel in) {
         try {
             groupID = in.readString();
+			groupName = in.readString();
             User[] userArray;
             userArray = in.createTypedArray(User.CREATOR);
             users = new HashSet<User>();
@@ -67,6 +73,17 @@ public class Group implements Parcelable{
 		users.remove(user);
 	}
 
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String name) throws IllegalArgumentException {
+		if (name == null) {
+			throw new IllegalArgumentException("Invalid group name!");
+		}
+		groupName = name;
+	}
+
 	// Parcelable function
 	@Override
 	public int describeContents() {
@@ -77,6 +94,7 @@ public class Group implements Parcelable{
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
         out.writeString(groupID);
+		out.writeString(groupName);
         User[] userArray = new User[users.size()];
         out.writeTypedArray(users.toArray(userArray), 0);
 

@@ -1,132 +1,47 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
-import android.database.Cursor;
+import android.animation.LayoutTransition;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
+public class AddUserGroupFragment extends Fragment /*implements SearchView.OnQueryTextListener,
+        android.widget.SearchView.OnCloseListener */ {
 
-public class AddUserGroupFragment extends Fragment {
     // TODO: Change implementation for group
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    protected static final String ARG_PAGE = "Group";
-    protected int mPage;
+
     protected RecyclerView recyclerView;
     protected RecyclerView.Adapter adapter;
-    protected RecyclerView.LayoutManager layoutManager;
-    protected ArrayList<String> name_ref;
-    protected ArrayList<String> phone_ref ;
-    protected ArrayList<User> selected_contacts = new ArrayList<>();
-//  protected OnFragmentInteractionListener mListener;
+    protected RecyclerView.LayoutManager linearLayoutManager;
+    protected Group[] groupDataList = null;
+    protected SearchView searchView;
 
-    public ArrayList<String> getContact(){
-        Cursor cursor = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-        ArrayList<String> contacts = new ArrayList<String>();
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-
-            do {
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                contacts.add(name);
-            } while (cursor.moveToNext());
-        }
-        return contacts;
-    }
-
-    public String matchPhoneByName(String name){
-        int pos = -1;
-        for(int c = 0; c<=name_ref.size()-1;c++){
-            if(name.equals(name_ref.get(c))){
-                pos = c;
-                break;
-            }
-        }
-        return phone_ref.get(pos);
-    }
-
-    public ArrayList<String> getNumber(){
-        Cursor cursor = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null,null, null);
-        ArrayList<String> numbers = new ArrayList<String>();
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-
-            do {
-                String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                numbers.add(number);
-            } while (cursor.moveToNext());
-        }
-        return numbers;
-    }
-
-    public void doStuff(View view){
-        TextView tv = (TextView) view.findViewById(R.id.item);
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setSelected(!v.isSelected());
-            }
-        });
-        if(tv.isSelected()){
-            String person_name = tv.getText().toString();
-            String person_phone = matchPhoneByName(person_name);
-            User user = new User(person_name, person_phone);
-            selected_contacts.add(user);
-        }else if(!tv.isSelected() && selected_contacts.size()!=0){
-            String person_name = tv.getText().toString();
-            for(int c = 0; c<= selected_contacts.size()-1;c++){
-                if(selected_contacts.get(c).getUserName().equals(person_name)){
-                    selected_contacts.remove(c);
-                }
-            }
-        }
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment AddUserContactListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AddUserGroupFragment newInstance(int page) {
-        Bundle args = new Bundle();
-        args.putInt(ARG_PAGE, page);
-        AddUserGroupFragment fragment = new AddUserGroupFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    // Default Constructor
     public AddUserGroupFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage = getArguments().getInt(ARG_PAGE);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        name_ref = this.getContact();
-        phone_ref=this.getNumber();
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
-        adapter = new AddUsersAdapter(getContact());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-
     }
 
     @Override
@@ -135,32 +50,158 @@ public class AddUserGroupFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_user_group, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.add_user_group_recycler_view);
+        linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
+        setHasOptionsMenu(true);
 
+        //TODO: PREPARE DATASET (Load from database) AND PASS INTO ADAPTER AS A LIST OR WHATNOT
+        Group group1 = new Group("Group 1");
+        Group group2 = new Group("Group 2");
+        Group group3 = new Group("Group 3");
+        Group group4 = new Group("Group 4");
+        Group group5 = new Group("Group 5");
+        Group group6 = new Group("Group 6");
+        Group group7 = new Group("Group 7");
+        Group group8 = new Group("Group 8");
+        Group group9 = new Group("Group 9");
+        Group group10 = new Group("Group 10");
+        Group group11 = new Group("Group 11");
+        Group group12 = new Group("Group 12");
+
+        groupDataList = new Group[12];
+        groupDataList[0] = group1;
+        groupDataList[1] = group2;
+        groupDataList[2] = group3;
+        groupDataList[3] = group4;
+        groupDataList[4] = group5;
+        groupDataList[5] = group6;
+        groupDataList[6] = group7;
+        groupDataList[7] = group8;
+        groupDataList[8] = group9;
+        groupDataList[9] = group10;
+        groupDataList[10] = group11;
+        groupDataList[11] = group12;
+
+        adapter = new AddUsersAdapter(groupDataList);
+        recyclerView.setAdapter(adapter);
         return rootView;
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            // Restore last state for checked position.
+            linearLayoutManager = savedInstanceState.getParcelable("STATE_KEY");
+        }
+    }
 
 //    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        searchView.setQuery("", true);
 //    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Auto-generated method stub
+        inflater.inflate(R.menu.menu_add_users, menu);
+
+        SearchManager searchManager =
+                (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem menuItem = menu.findItem(R.id.action_search);
+        final SearchView searchView =
+                (SearchView) MenuItemCompat.getActionView(menuItem);
+
+        final LinearLayout searchBar = (LinearLayout) searchView.findViewById(R.id.search_bar);
+
+        //Give the LinearLayout a transition animation.
+        searchBar.setLayoutTransition(new LayoutTransition());
+        ActionBar.LayoutParams p= new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.MATCH_PARENT);
+        searchView.setLayoutParams(p);
+
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getActivity().getComponentName()));
+
+        if (searchView != null) {
+            searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean queryTextFocused) {
+                    //Log.d("DEBUGGING", "FOCUS CHANGE is called");
+                    if (!queryTextFocused) {
+                        MenuItemCompat.collapseActionView(menuItem);
+                    }
+                }
+            });
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    ((AddUsersAdapter) recyclerView.getAdapter()).setFilterGroup(query);
+                    recyclerView.scrollToPosition(0);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String query) {
+                    //Log.d("DEBUGGING", "onQueryTextChange is called");
+                    ((AddUsersAdapter) recyclerView.getAdapter()).setFilterGroup(query);
+                    recyclerView.scrollToPosition(0);
+                    return true;
+                }
+
+            });
+
+            searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    ((AddUsersAdapter) recyclerView.getAdapter()).setFilterGroup(null);
+                    recyclerView.scrollToPosition(0);
+                    return true;
+                }
+            });
+
+            searchView.setQueryHint("Search Groups...");
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        // Save list state
+        state.putParcelable("STATE_KEY", linearLayoutManager.onSaveInstanceState());
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    public ArrayList<User> getSelection() {
+        ArrayList<User> selection = new ArrayList<User>();
+        SparseBooleanArray indexArray = ((AddUsersAdapter)adapter).getGroupFlag();
+        int count = 0;
+        for (Group group : groupDataList) {
+            if (indexArray.get(count, false)) {
+                for (User user : group.getUsers()) {
+                    selection.add(user);
+                }
+            }
+            count++;
+        }
+        return selection;
+    }
 }

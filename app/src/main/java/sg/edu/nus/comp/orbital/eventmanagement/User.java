@@ -26,7 +26,7 @@ public class User implements Parcelable {
 	protected String facebookUID = null;
 	protected String phoneNumber = null;
 	protected Integer phoneNumThresh = 5;
-	protected Integer photoID = null;
+	//protected Integer photoID = null;
 
 	/*
 	 * Constructor (For non-facebook users)
@@ -88,7 +88,7 @@ public class User implements Parcelable {
             facebookUID = in.readString();
             phoneNumber = in.readString();
             phoneNumThresh = in.readInt();
-            photoID = in.readInt();
+            //photoID = in.readInt();
         } catch (Exception e) {
             Log.e("USER PARCEL ERROR", e.toString());
             e.printStackTrace();
@@ -190,14 +190,14 @@ public class User implements Parcelable {
 	}
 
 	// Setter for photoID
-	public void setPhotoID (int photoID) {
-		this.photoID = photoID;
-	}
+//	public void setPhotoID (int photoID) {
+//		this.photoID = photoID;
+//	}
 
 	// Getter for photoID
-	public int getPhotoID () {
-		return photoID;
-	}
+//	public int getPhotoID () {
+//		return photoID;
+//	}
 
 	@Override
 	public int describeContents() {
@@ -210,6 +210,6 @@ public class User implements Parcelable {
         out.writeString(facebookUID);
         out.writeString(phoneNumber);
         out.writeInt(phoneNumThresh);
-        out.writeInt(photoID);
+//      out.writeInt(photoID);
     }
 }

@@ -71,7 +71,7 @@ public class BillsActivity extends ActionBarActivity implements RecyclerView
         User user19 = new User("Ridhwan", "97801249");
         User mPayer = new User("AH LONG", "1800 555 0000");
 
-        Group group = new Group();
+        Group group = new Group("Good Friends");
         group.addUser(user01);
         group.addUser(user02);
         group.addUser(user03);

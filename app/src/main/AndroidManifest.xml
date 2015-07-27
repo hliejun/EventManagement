@@ -112,11 +112,24 @@
         <activity
             android:name=".AddUsersActivity"
             android:label="@string/title_activity_add_users"
-            android:parentActivityName=".AddPurchaseActivity" >
+
+            android:parentActivityName=".AddPurchaseActivity"
+            android:theme="@style/Theme.AppCompat.Black.NoActionBar.FullScreen">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="sg.edu.nus.comp.orbital.eventmanagement.AddPurchaseActivity" />
         </activity>
+        <!-- android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"> -->
     </application>
 
 </manifest>

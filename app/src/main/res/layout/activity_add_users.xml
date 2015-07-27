@@ -4,7 +4,7 @@
     <!--tools:layout="@layout/fragment_add_users" android:layout_width="match_parent"-->
     <!--android:layout_height="match_parent" />-->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -13,26 +13,59 @@
               tools:context=".AddUsersActivity"
               android:weightSum="1">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/sliding_tabs"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/users_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <include
+            android:id="@+id/add_users_toolbar"
+            layout="@layout/toolbar">
+        </include>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/add_users_tabs"
+            style="@style/CustomTabLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            app:tabMode="fixed"
+            />
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <!-- android.support.design.widget.TabLayout
+        android:id="@+id/add_users_tabs"
         style="@style/CustomTabLayout"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         app:tabMode="fixed"
-        />
+        / -->
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+        android:id="@+id/add_users_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white" />
+        android:layout_height="390dp"
+        android:background="@color/background_material_light"
+        android:layout_weight="0.97"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/users_appbar"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Confirmed"
-        android:clickable="true"
-        android:gravity="center_vertical"
         android:id="@+id/Confirmation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:clickable="true"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="18dp"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
         android:onClick="confirmUsers"/>
-</LinearLayout>
+</RelativeLayout>

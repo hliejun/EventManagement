@@ -51,7 +51,7 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         setContentView(R.layout.activity_create_bill);
         ContextManager.context = mContext;
 
-        // Dummy Purchases Array
+//        // Dummy Purchases Array
 //        User user01 = new User("Cecilia", "95263467");
 //        User user02 = new User("Leonardo", "82560134");
 //        User user03 = new User("Bieber", "83464119");
@@ -73,9 +73,9 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
 //        User user19 = new User("Ridhwan", "97801249");
 //        User user20 = new User("LaLa", "912314923");
 //        User user21 = new User("Po", "094384928");
-//        User mPayer = new User("AH LONG", "1800 555 0000");
+//        //User mPayer = new User("AH LONG", "1800 555 0000");
 //
-//        Group group = new Group();
+//        Group group = new Group("HAPZ");
 //        group.addUser(user01);
 //        group.addUser(user02);
 //        group.addUser(user03);
@@ -99,16 +99,17 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
 //        group.addUser(user21);
 
         Intent intent = getIntent();
-        String previousActivity = intent.getStringExtra("FROM_ACTIVITY");
-        switch(previousActivity) {
-            case "BillsActivity":
-                User mPayer = new User("AH LONG", "1800 555 0000");
-                billInReview = new Bill(mPayer);
-                break;
-            default:
-                Log.d("CREATE_BILL_ACTIVITY", "Error constructing bill!");
-                break;
-        }
+//        String previousActivity = intent.getStringExtra("FROM_ACTIVITY");
+//        switch(previousActivity) {
+//            case "BillsActivity":
+//                User mPayer = new User("AH LONG", "1800 555 0000");
+//                billInReview = new Bill(mPayer);
+//                //TODO: Add group to Bill (Define method)
+//                break;
+//            default:
+//                Log.d("CREATE_BILL_ACTIVITY", "Error constructing bill!");
+//                break;
+//        }
 
         //TODO: Retrieve mPayer from database, or set as global from start
 
@@ -127,42 +128,42 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
 //        sheltoxGang.add("Leonardo");
 //        sheltoxGang.add("Bieber");
 //        sheltoxGang.add("Aladdin");
+//
+//        ArrayList<String> pgprOrders = new ArrayList<String>();
+//        pgprOrders.add("Leonardo");
+//        pgprOrders.add("Shammu");
+//        pgprOrders.add("Dennis");
+//        pgprOrders.add("Seraphine");
+//        pgprOrders.add("Terence");
+//        pgprOrders.add("Courtney");
+//        pgprOrders.add("Louis");
+//        pgprOrders.add("Xian Dan Ji Ding Rice");
+//        pgprOrders.add("200");
+//
+//        ArrayList<String> lollipop = new ArrayList<String>();
+//        lollipop.add("Betty");
+//        lollipop.add("Binarie");
+//        lollipop.add("Shaunti");
+//        lollipop.add("Denise");
+//        lollipop.add("Thomas");
+//        lollipop.add("Vishnu");
+//        lollipop.add("Ridhwan");
+//        lollipop.add("Lollipop");
+//        lollipop.add("500");
+//
+//        billInReview.addPurchase("Cecilia", "Lollipop", 5);
+//        billInReview.addPurchase("Denise", "Pokeball", 1);
+//        billInReview.addPurchase("Vishnu", "Xian Dan Ji Ding Rice", 1);
+//        billInReview.addPurchase("Thomas", "Beer", 1);
+//        //billInReview.addPurchase(sheltoxGang, "Sheltox", 23);
+//        //billInReview.addPurchase(pgprOrders);
+//        //billInReview.addPurchase(lollipop);
+//        billInReview.addPurchase("LaLa", "Chicken Rice", 1);
+//        billInReview.addPurchase("Po", "Chilly Crab", 1);
 
-        ArrayList<String> pgprOrders = new ArrayList<String>();
-        pgprOrders.add("Leonardo");
-        pgprOrders.add("Shammu");
-        pgprOrders.add("Dennis");
-        pgprOrders.add("Seraphine");
-        pgprOrders.add("Terence");
-        pgprOrders.add("Courtney");
-        pgprOrders.add("Louis");
-        pgprOrders.add("Xian Dan Ji Ding Rice");
-        pgprOrders.add("200");
-
-        ArrayList<String> lollipop = new ArrayList<String>();
-        lollipop.add("Betty");
-        lollipop.add("Binarie");
-        lollipop.add("Shaunti");
-        lollipop.add("Denise");
-        lollipop.add("Thomas");
-        lollipop.add("Vishnu");
-        lollipop.add("Ridhwan");
-        lollipop.add("Lollipop");
-        lollipop.add("500");
-
-        billInReview.addPurchase("Cecilia", "Lollipop", 5);
-        billInReview.addPurchase("Denise", "Pokeball", 1);
-        billInReview.addPurchase("Vishnu", "Xian Dan Ji Ding Rice", 1);
-        billInReview.addPurchase("Thomas", "Beer", 1);
-        //billInReview.addPurchase(sheltoxGang, "Sheltox", 23);
-        //billInReview.addPurchase(pgprOrders);
-        //billInReview.addPurchase(lollipop);
-        billInReview.addPurchase("LaLa", "Chicken Rice", 1);
-        billInReview.addPurchase("Po", "Chilly Crab", 1);
-
-        billInReview.setList();
-
-        myPurchases = billInReview.getListOfPurchases();
+        //TODO: Shift to confirm method
+//        billInReview.setList();
+//        myPurchases = billInReview.getListOfPurchases();
 
 
         // Set Layout Manager and RecyclerView
@@ -173,7 +174,7 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         mRecyclerView.setHasFixedSize(true);
 
         // Instantiate the adapter and pass in its data source:
-        mAdapter = new CreateBillAdapter(myPurchases);
+        mAdapter = new CreateBillAdapter(/*myPurchases*/);
 
         // Plug the adapter into the RecyclerView:
         mRecyclerView.setAdapter(mAdapter);
@@ -191,6 +192,16 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
     public void confirmBill(View view) {
         Intent intent = new Intent(this, ReviewBillActivity.class);
         Bundle bundle = new Bundle();
+
+        // TODO: Acquire mPayer, Group from database AND event name from input field to be added
+        User mPayer = new User("AH LONG", "1800 555 0000");
+        Group group = new Group("RANDOM");
+        billInReview = new Bill(mPayer);
+        ArrayList<Purchase> purchases = mAdapter.getPurchases();
+        for (Purchase purchase : purchases) {
+            billInReview.addPurchase(purchase);
+        }
+        billInReview.setList();
         bundle.putParcelable("NEW_BILL", billInReview);
         intent.putExtras(bundle);
         finish();
@@ -200,7 +211,9 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.addPurchaseButton) {
+        if (view == null) {
+            // do nothing ...
+        } else if (view.getId() == R.id.addPurchaseButton) {
             addPurchase(view);
         } else if (view.getId() == R.id.confirmButton) {
             confirmBill(view);
@@ -209,6 +222,8 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
             if (actionMode != null) {
                 myToggleSelection(index);
             }
+        } else {
+            // do nothing ...
         }
     }
 
@@ -312,7 +327,10 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
                     try {
                         Bundle bundle = data.getExtras();
                         Purchase purchase = bundle.getParcelable("NEW_PURCHASE");
-                        billInReview.addPurchase(purchase);
+                        //billInReview.addPurchase(purchase);
+                        mAdapter.addPurchase(purchase);
+                        Log.d("PURCHASE QUANTITY", Integer.toString(purchase.getQuantity()));
+                        mAdapter.notifyDataSetChanged();
                     } catch(Exception e) {
                         e.printStackTrace();
                     }

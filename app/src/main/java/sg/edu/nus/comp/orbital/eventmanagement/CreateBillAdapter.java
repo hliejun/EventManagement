@@ -1,6 +1,7 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +26,12 @@ public class CreateBillAdapter extends RecyclerView.Adapter {
     private DecimalFormat df = new DecimalFormat("#.00");
 
     // Adapter Constructor: Initialize all inputs
-    public CreateBillAdapter(ListOfPurchases purchases) {
-        purchaseList = purchases;
+    public CreateBillAdapter(/*ListOfPurchases purchases*/) {
+//        purchaseList = purchases;
         myPurchases = new ArrayList<Purchase>();
-        for (Purchase purchase : purchaseList.getPurchases()) {
-            myPurchases.add(purchase);
-        }
+//        for (Purchase purchase : purchaseList.getPurchases()) {
+//            myPurchases.add(purchase);
+//        }
         selectionMask = new SparseBooleanArray();
     }
 
@@ -48,14 +49,19 @@ public class CreateBillAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final CreateBillViewHolder viewHolder = (CreateBillViewHolder) holder;
-        viewHolder.profilePic.setImageResource(R.drawable.small_profile);
         HashSet<User> users = myPurchases.get(position).getUser();
         if (users.size() > 1) {
+            Log.d("TEST", "GROUP NAME SHOULD SHOW");
             viewHolder.userName.setText("GROUP PURCHASE");
-        } else {
+            viewHolder.profilePic.setImageResource(R.drawable.group_icon);
+        } else if (users.size() == 1){
+            Log.d("TEST", "BUYER NAME SHOULD SHOW");
             for (User user : users) {
                 viewHolder.userName.setText("Purchased By: " + user.getUserName());
             }
+            viewHolder.profilePic.setImageResource(R.drawable.user_icon);
+        } else {
+            Log.d("TEST", "NULL!!!!");
         }
         viewHolder.itemName.setText("Item: " + myPurchases.get(position).getItem
                 ().getItemName());
@@ -120,6 +126,11 @@ public class CreateBillAdapter extends RecyclerView.Adapter {
 
     public ArrayList<Purchase> getPurchases() {
         return myPurchases;
+    }
+
+    public void addPurchase(Purchase purchase) {
+        myPurchases.add(purchase);
+        //notifyDataSetChanged();
     }
 
 }

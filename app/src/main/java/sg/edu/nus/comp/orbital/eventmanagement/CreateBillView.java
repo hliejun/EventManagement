@@ -52,7 +52,7 @@ public class CreateBillView extends RelativeLayout {
         LayoutInflater.from(context).inflate(R.layout.purchase, this, true);
         profilePic = (ImageView) findViewById(R.id.profilePic);
         userName = (TextView) findViewById(R.id.userName);
-        itemName = (TextView) findViewById(R.id.item);
+        itemName = (TextView) findViewById(R.id.contact_name);
         itemCost = (TextView) findViewById(R.id.cost);
         itemQuantity = (TextView) findViewById(R.id.quantity);
     }

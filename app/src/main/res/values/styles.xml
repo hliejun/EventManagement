@@ -1,18 +1,63 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:textColor">@color/primary_text_default_material_light</item>
         <!-- Customize your theme here. -->
     </style>
 
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
         <!-- item name="tabIndicatorColor">#0000FF</item -->
+        <item name="windowActionBar">false</item>
         <item name="tabTextAppearance">@style/CustomTextAppearance</item>
+        <item name="android:background">@color/ripple_material_light</item>
     </style>
 
     <style name="CustomTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:background">@color/ripple_material_light</item>
         <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="Button">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:elevation" tools:targetApi="lollipop">1dp</item>
+        <item name="android:translationZ" tools:targetApi="lollipop">1dp</item>
+        <item name="android:background">@drawable/custom_button</item>
+    </style>
+
+    <style name="Theme.AppCompat.Black.NoActionBar.FullScreen"
+           parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColor">@color/primary_text_default_material_light</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="ThemeOverlay.AddUsers" parent="ThemeOverlay.AppCompat">
+        <item name="android:colorBackground">@color/ripple_material_light</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="CustomCheckBox">
+        <item name="android:theme">@style/CheckBoxTheme</item>
+    </style>
+
+    <style name="CheckBoxTheme">
+        <item name="android:colorAccent" tools:targetApi="lollipop">
+            @color/NORMAL_STATE_COLOR
+        </item>
+        <item name="android:colorControlNormal" tools:targetApi="lollipop">
+            @color/ripple_material_light
+        </item>
+        <item name="android:colorControlHighlight" tools:targetApi="lollipop">
+            @color/NORMAL_STATE_COLOR
+        </item>
     </style>
 
 </resources>

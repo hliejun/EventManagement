@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryDark">#000008</color>
+    <color name="light">#080008</color>
+    <color name="accent">#0000FF</color>
+    <color name="PRESSED_STATE_COLOR">#F6325F</color>
+    <color name="FOCUSED_STATE_COLOR">#F6325F</color>
+    <color name="NORMAL_STATE_COLOR">#008FFF</color>
+    <color name="white">#FFFFFF</color>
+</resources>

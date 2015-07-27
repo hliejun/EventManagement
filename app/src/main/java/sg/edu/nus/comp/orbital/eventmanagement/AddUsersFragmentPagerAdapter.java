@@ -13,11 +13,7 @@ import android.text.style.ImageSpan;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Larry on 11/7/15.
- */
 public class AddUsersFragmentPagerAdapter extends FragmentPagerAdapter {
-    final int PAGE_COUNT = 3;
     protected String tabTitles[] = new String[] { "Groups", "Users", "Contacts" };
     protected Context context;
     protected int[] imageResId = {
@@ -35,12 +31,12 @@ public class AddUsersFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return PAGE_COUNT;
+        return fragmentList.size();
     }
 
     @Override
     public Fragment getItem(int position) {
-        return AddUserContactListFragment.newInstance(position + 1);
+        return fragmentList.get(position);
     }
 
     public void addFragment(Fragment fragment, String title) {
@@ -55,7 +51,7 @@ public class AddUsersFragmentPagerAdapter extends FragmentPagerAdapter {
 
         Drawable image = ContextCompat.getDrawable(context, imageResId[position]);
         image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-        SpannableString sb = new SpannableString("   " + tabTitles[position]);
+        SpannableString sb = new SpannableString("   " /*+ tabTitles[position]*/);
         ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
         sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return sb;

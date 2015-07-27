@@ -80,7 +80,7 @@ class Bill implements calculationSystem, Parcelable {
 			}
 		}
 
-		userGroup = new Group();
+		userGroup = new Group("GREAT FRIENDS");
 		billID = Integer.toString(this.hashCode());
 		billTitle = "MISC [" + DateFormat.getDateTimeInstance().format(new Date()) + "]";
 	}
@@ -317,10 +317,12 @@ class Bill implements calculationSystem, Parcelable {
 			this.addItem(purchase.getItem().getItemName(), purchase.getItem().getItemType(),
 					purchase.getItem().getItemCost());
 		}
-		if (quantity <= 0) {
+		if (purchase.getQuantity() <= 0) {
 			throw new IllegalArgumentException(
 					"Quantity must be a positive integer!");
 		}
+		quantity = purchase.getQuantity();
+
 		Item item = itemDatabase.get(itemName);
 		try {
 			purchaseDatabase.put(purchase.getPurchaseID(), purchase);

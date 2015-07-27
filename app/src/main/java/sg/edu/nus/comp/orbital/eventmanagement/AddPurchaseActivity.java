@@ -1,12 +1,15 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -29,6 +32,9 @@ public class AddPurchaseActivity extends ActionBarActivity {
         final EditText itemTypeField = (EditText)findViewById(R.id.itemType);
         final EditText itemCostField = (EditText)findViewById(R.id.itemCost);
         final EditText itemQuantityField = (EditText)findViewById(R.id.itemQuantity);
+
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+//        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
         // Fetch users into users set
 
@@ -121,7 +127,6 @@ public class AddPurchaseActivity extends ActionBarActivity {
                     } catch(Exception e) {
                         e.printStackTrace();
                     }
-
                 }
                 break;
             }
