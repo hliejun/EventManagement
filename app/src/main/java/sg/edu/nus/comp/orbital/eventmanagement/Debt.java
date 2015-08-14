@@ -4,11 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 /*** Debt class ***/
 
-public class Debt implements Parcelable{
+public class Debt implements Parcelable, Serializable {
 	protected String debtID = null;
 	protected Bill bill = null;
 	protected User loanshark = null;

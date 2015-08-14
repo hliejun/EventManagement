@@ -2,6 +2,8 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.text.DateFormat;
 
 import android.util.Log;
@@ -11,7 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 /*** Manual Input Bill Class ***/
-class Bill implements calculationSystem, Parcelable {
+class Bill implements calculationSystem, Parcelable , Serializable {
 	protected String billID = null;
 	protected String billTitle = "MISCELLANEOUS";
 
@@ -90,11 +92,60 @@ class Bill implements calculationSystem, Parcelable {
         try {
             billID = in.readString();
             billTitle = in.readString();
-            userDatabase = in.readHashMap(User.class.getClassLoader());
-            itemDatabase = in.readHashMap(Item.class.getClassLoader());
-            purchaseDatabase = in.readHashMap(Purchase.class.getClassLoader());
-            debtDatabase = in.readHashMap(HashSet.class.getClassLoader());
-            userCostTable = in.readHashMap(Double.class.getClassLoader());
+
+			int userDatabaseSize = in.readInt();
+			userDatabase = new HashMap<String, User>();
+			for(int count = 0; count < userDatabaseSize; ++count) {
+				String key = in.readString();
+				User value = in.readParcelable(User.class.getClassLoader());
+				userDatabase.put(key, value);
+			}
+
+			int itemDatabaseSize = in.readInt();
+			itemDatabase = new HashMap<String, Item>();
+			for(int count = 0; count < itemDatabaseSize; ++count) {
+				String key = in.readString();
+				Item value = in.readParcelable(Item.class.getClassLoader());
+				itemDatabase.put(key, value);
+			}
+
+			int purchaseDatabaseSize = in.readInt();
+			purchaseDatabase = new HashMap<String, Purchase>();
+			for(int count = 0; count < purchaseDatabaseSize; ++count) {
+				String key = in.readString();
+				Purchase value = in.readParcelable(Purchase.class.getClassLoader());
+				purchaseDatabase.put(key, value);
+			}
+
+			//userDatabase = in.readHashMap(User.class.getClassLoader());
+            //itemDatabase = in.readHashMap(Item.class.getClassLoader());
+            //purchaseDatabase = in.readHashMap(Purchase.class.getClassLoader());
+
+			debtDatabase = new HashMap<User, HashSet<Debt>>();
+			int debtDatabaseSize = in.readInt();
+			for(int count = 0; count < debtDatabaseSize; ++count) {
+				HashSet<Debt> debtSet = new HashSet<Debt>();
+				Debt[] debtSetArray;
+				User key = in.readParcelable(User.class.getClassLoader());
+				debtSetArray = in.createTypedArray(Debt.CREATOR);
+				for (Debt debt : debtSetArray) {
+					debtSet.add(debt);
+				}
+				debtDatabase.put(key, debtSet);
+			}
+
+            //debtDatabase = in.readHashMap(HashSet.class.getClassLoader());
+
+			int userCostTableSize = in.readInt();
+			userCostTable = new HashMap<User, Double>();
+			for(int count = 0; count < userCostTableSize; ++count) {
+				User key = in.readParcelable(User.class.getClassLoader());
+				Double value = in.readDouble();
+				userCostTable.put(key, value);
+			}
+            //userCostTable = in.readHashMap(Double.class.getClassLoader());
+
+
             purchaseList = in.readParcelable(ListOfPurchases.class.getClassLoader());
             userGroup = in.readParcelable(Group.class.getClassLoader());
             payer = in.readParcelable(User.class.getClassLoader());
@@ -302,14 +353,14 @@ class Bill implements calculationSystem, Parcelable {
 		String itemName = null;
 		int quantity = 0;
 
-		HashSet<User> users = new HashSet<User>();
+		//HashSet<User> users = new HashSet<User>();
 		for (User user : purchase.getUser()) {
 			if (userDatabase.get(user.getUserName()) == null) {
 //				throw new IllegalArgumentException(
 //						"User does not exist in the database!");
 				this.addUser(user.getUserName(), user.getFacebookUID(), user.getPhoneNumber());
 			}
-			users.add(userDatabase.get(user.getUserName()));
+			//users.add(userDatabase.get(user.getUserName()));
 		}
 		if (itemDatabase.get(itemName) == null) {
 //			throw new IllegalArgumentException(
@@ -1090,11 +1141,42 @@ class Bill implements calculationSystem, Parcelable {
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeString(billID);
 		out.writeString(billTitle);
-        out.writeMap(userDatabase);
-        out.writeMap(itemDatabase);
-        out.writeMap(purchaseDatabase);
-        out.writeMap(debtDatabase);
-        out.writeMap(userCostTable);
+
+		out.writeInt(userDatabase.size());
+		for(String key : userDatabase.keySet()) {
+			out.writeString(key);
+			out.writeParcelable(userDatabase.get(key), flags);
+		}
+		// out.writeMap(userDatabase);
+
+		out.writeInt(itemDatabase.size());
+		for(String key : itemDatabase.keySet()) {
+			out.writeString(key);
+			out.writeParcelable(itemDatabase.get(key), flags);
+		}
+		// out.writeMap(itemDatabase);
+
+		out.writeInt(purchaseDatabase.size());
+		for(String key : purchaseDatabase.keySet()) {
+			out.writeString(key);
+			out.writeParcelable(purchaseDatabase.get(key), flags);
+		}
+
+		out.writeInt(debtDatabase.size());
+		for(User key : debtDatabase.keySet()) {
+			out.writeParcelable(key, flags);
+			Debt[] debtArray = new Debt[debtDatabase.get(key).size()];
+			out.writeTypedArray(debtDatabase.get(key).toArray(debtArray), flags);
+		}
+        //out.writeMap(debtDatabase);
+
+		out.writeInt(userCostTable.size());
+		for(User key : userCostTable.keySet()) {
+			out.writeParcelable(key, flags);
+			out.writeDouble(userCostTable.get(key));
+		}
+        //out.writeMap(userCostTable);
+
 		out.writeParcelable(purchaseList, flags);
 		out.writeParcelable(userGroup, flags);
 		out.writeParcelable(payer, flags);

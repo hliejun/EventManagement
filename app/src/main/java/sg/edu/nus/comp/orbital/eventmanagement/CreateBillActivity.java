@@ -1,7 +1,10 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GestureDetectorCompat;
@@ -10,6 +13,7 @@ import android.annotation.TargetApi;
 import android.os.Parcel;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +23,13 @@ import android.view.MenuInflater;
 import static android.view.GestureDetector.SimpleOnGestureListener;
 import android.content.Context;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 // Create a new bill:
@@ -34,6 +44,10 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
     protected ListOfPurchases myPurchases = null;
     protected Bill billInReview = null;
     protected Context mContext;
+    final static private String USER_FILENAME = "masterUser.xml";
+    protected User masterUser;
+
+    protected EditText billTitleField = null;
 
     protected GestureDetectorCompat gestureDetector = null;
     protected ActionMode actionMode = null;
@@ -181,27 +195,154 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
 
         mRecyclerView.addOnItemTouchListener(this);
         gestureDetector = new GestureDetectorCompat(this, new RecyclerViewDemoOnGestureListener());
+
+        billTitleField = (EditText) findViewById(R.id.bill_title);
+        billTitleField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    hideKeyboard();
+                }
+            }
+        });
     }
 
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getBaseContext().getSystemService(Context
+                .INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(billTitleField.getWindowToken(), 0);
+    }
 
     public void addPurchase(View view) {
         Intent intent = new Intent(this, AddPurchaseActivity.class);
         startActivityForResult(intent, 0);
     }
 
-    public void confirmBill(View view) {
+    public void dialogQuery(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Context context = this.getApplicationContext();
+        LinearLayout layout = new LinearLayout(context, null, R.style.appCompatDialog);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText gstField = new EditText(context);
+        gstField.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+        gstField.setHint("GST (%)");
+        layout.addView(gstField);
+
+        final EditText serviceChargeField = new EditText(context);
+        serviceChargeField.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+        serviceChargeField.setHint("Svc. Charges (%)");
+        layout.addView(serviceChargeField);
+
+        final EditText discountField = new EditText(context);
+        discountField.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+        discountField.setHint("Discounts ($)");
+        layout.addView(discountField);
+
+        final EditText additionalChargesField = new EditText(context);
+        additionalChargesField.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+        additionalChargesField.setHint("Addt. Charges ($)");
+        layout.addView(additionalChargesField);
+
+
+        builder.setTitle("Enter Tax Rate!");
+        builder.setView(layout);
+
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+                    }
+                });
+
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+                    }
+                });
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener
+                () {
+            @Override
+            public void onClick(View v) {
+                double gst = 0;
+                double svc = 0;
+                double addtCost = 0;
+                double discount = 0;
+
+                if (gstField.getText() != null && gstField.getText().length() > 0) {
+                    gst = Double.parseDouble(gstField.getText().toString());
+                }
+                if (serviceChargeField.getText() != null && serviceChargeField.getText().length() > 0) {
+                    svc = Double.parseDouble(serviceChargeField.getText().toString());
+                }
+                if (additionalChargesField.getText() != null && additionalChargesField.getText()
+                        .length() > 0) {
+                    addtCost = Double.parseDouble(additionalChargesField.getText().toString());
+                }
+                if (discountField.getText() != null && discountField.getText()
+                        .length() > 0) {
+                    discount = Double.parseDouble(discountField.getText().toString());
+                }
+
+                if (gst > 1 || gst < 0) {
+                    gstField.setError("GST must be decimal between 0 to 1!");
+                    //Toast.makeText(getApplicationContext(), gstField.getError(), Toast.LENGTH_SHORT).show();
+                } else if (svc > 1 || svc < 0) {
+                    serviceChargeField.setError("Svc. charge must be decimal between 0 and 1!");
+                    //Toast.makeText(getApplicationContext(), serviceChargeField.getError(), Toast.LENGTH_SHORT).show();
+                } else if (addtCost < 0) {
+                    additionalChargesField.setError("Addt. cost must not be negative!");
+                    //Toast.makeText(getApplicationContext(), additionalChargesField.getError(),Toast.LENGTH_SHORT).show();
+                } else if (discount < 0) {
+                    discountField.setError("Discount must not be negative!");
+                    //Toast.makeText(getApplicationContext(), discountField.getError(), Toast.LENGTH_SHORT).show();
+                } else {
+                    dialog.dismiss();
+                    confirmBill(gst, svc, addtCost, discount);
+
+                }
+            }
+        });
+
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener
+                () {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public void confirmBill(double gst, double svc, double addtCost, double discount) {
         Intent intent = new Intent(this, ReviewBillActivity.class);
         Bundle bundle = new Bundle();
 
         // TODO: Acquire mPayer, Group from database AND event name from input field to be added
-        User mPayer = new User("AH LONG", "1800 555 0000");
+        readMasterUserFromFile();
         Group group = new Group("RANDOM");
-        billInReview = new Bill(mPayer);
+        final EditText billTitleField = (EditText)findViewById(R.id.bill_title);
+        String billTitle = billTitleField.getText().toString();
+        billInReview = new Bill(masterUser);
+        if (billTitle != null) {
+            billInReview.setBillTitle(billTitle);
+        }
         ArrayList<Purchase> purchases = mAdapter.getPurchases();
         for (Purchase purchase : purchases) {
             billInReview.addPurchase(purchase);
         }
-        billInReview.setList();
+
+        billInReview.setGST(gst);
+        billInReview.setServiceTax(svc);
+        billInReview.setAdditionalCost(addtCost);
+        billInReview.setDiscount(discount);
+
+        //billInReview.setList();
         bundle.putParcelable("NEW_BILL", billInReview);
         intent.putExtras(bundle);
         finish();
@@ -216,7 +357,7 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         } else if (view.getId() == R.id.addPurchaseButton) {
             addPurchase(view);
         } else if (view.getId() == R.id.confirmButton) {
-            confirmBill(view);
+            dialogQuery(view);
         } else if (view.getId() == R.id.purchase) {
             int index = mRecyclerView.getChildAdapterPosition(view);
             if (actionMode != null) {
@@ -337,6 +478,31 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
                 }
                 break;
             }
+        }
+    }
+
+    private boolean readMasterUserFromFile(){
+        FileInputStream fin;
+        ObjectInputStream ois=null;
+        try{
+            fin = getApplicationContext().openFileInput(USER_FILENAME);
+            ois = new ObjectInputStream(fin);
+            masterUser =(User)ois.readObject();
+            ois.close();
+            Log.d("USER_LOGIN", "Master user read successfully");
+            return true;
+        }catch(Exception e){
+            Log.d("USER_LOGIN", "Cant read saved user"+e.getMessage());
+            return false;
+        }
+        finally{
+            if(ois!=null)
+                try{
+                    ois.close();
+                }catch(Exception e){
+                    Log.d("USER_LOGIN", "Error in closing stream while reading user" + e
+                            .getMessage());
+                }
         }
     }
 }

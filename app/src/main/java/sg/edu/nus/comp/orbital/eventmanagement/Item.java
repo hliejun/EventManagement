@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.Serializable;
+
 /*
  * Class Item
  * 
@@ -18,7 +20,7 @@ import android.util.Log;
  * 
  * @author Huang Lie Jun
  */
-public class Item implements Parcelable{
+public class Item implements Parcelable, Serializable {
 	protected String itemName = null;
 	protected String itemType = null;
 	protected double costPerUnit = 0;

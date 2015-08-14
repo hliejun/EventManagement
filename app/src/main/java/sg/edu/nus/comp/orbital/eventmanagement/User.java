@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.Serializable;
+
 /*
  * Class User
  * 
@@ -20,7 +22,7 @@ import android.util.Log;
  * 
  * @author Huang Lie Jun
  */
-public class User implements Parcelable {
+public class User implements Parcelable, Serializable {
 
 	protected String userName = null;
 	protected String facebookUID = null;

@@ -139,14 +139,18 @@ public class BillsActivity extends ActionBarActivity implements RecyclerView
     // Gesture control
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.createBillButton) {
-            createBill(view);
-        } else if (view.getId() == R.id.backToMain) {
-            backHome(view);
-        } else if (view.getId() == R.id.bill) {
-            int index = mRecyclerView.getChildAdapterPosition(view);
-            if (actionMode != null) {
-                myToggleSelection(index);
+        if (view != null) {
+            if (view.getId() == R.id.createBillButton) {
+                createBill(view);
+            } else if (view.getId() == R.id.backToMain) {
+                backHome(view);
+            } else if (view.getId() == R.id.bill) {
+                int index = mRecyclerView.getChildAdapterPosition(view);
+                if (actionMode != null) {
+                    myToggleSelection(index);
+                }
+            } else {
+                // do nothing...
             }
         }
     }

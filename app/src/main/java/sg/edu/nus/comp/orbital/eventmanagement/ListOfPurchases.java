@@ -1,9 +1,11 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,7 +21,7 @@ import java.util.Map;
  * 
  * @author Huang Lie Jun
  */
-public class ListOfPurchases implements Parcelable{
+public class ListOfPurchases implements Parcelable, Serializable {
 	protected HashSet<Purchase> purchases = null;
 	protected HashMap<User, HashSet<Purchase>> userAsKey = null;
 	protected HashMap<Item, HashSet<Purchase>> itemAsKey = null;
@@ -62,29 +64,29 @@ public class ListOfPurchases implements Parcelable{
 				for (User currentUser : currentUsers) {
 					// For new user, create new entry and purchase set
 					if (currentUser != null
-							&& userAsKey.get(currentUser) == null) {
+							&& userAsKey.get(userDatabase.get(currentUser.getUserName())) == null) {
 						HashSet<Purchase> newPurchaseSet = new HashSet<Purchase>();
 						newPurchaseSet.add(current);
-						userAsKey.put(currentUser, newPurchaseSet);
+						userAsKey.put(userDatabase.get(currentUser.getUserName()), newPurchaseSet);
 						// For existing user, update current purchase set
 					} else if (currentUser != null) {
 						HashSet<Purchase> currentPurchaseSet = userAsKey
-								.get(currentUser);
+								.get(userDatabase.get(currentUser.getUserName()));
 						currentPurchaseSet.add(current);
-						userAsKey.put(currentUser, currentPurchaseSet);
+						userAsKey.put(userDatabase.get(currentUser.getUserName()), currentPurchaseSet);
 					}
 				}
 				// For new item, create new entry and purchase set
-				if (itemAsKey.get(currentItem) == null) {
+				if (itemAsKey.get(itemDatabase.get(currentItem.getItemName())) == null) {
 					HashSet<Purchase> newPurchaseSet = new HashSet<Purchase>();
 					newPurchaseSet.add(current);
-					itemAsKey.put(currentItem, newPurchaseSet);
+					itemAsKey.put(itemDatabase.get(currentItem.getItemName()), newPurchaseSet);
 					// For existing item, update current purchase set
 				} else {
 					HashSet<Purchase> currentPurchaseSet = itemAsKey
-							.get(currentItem);
+							.get(itemDatabase.get(currentItem.getItemName()));
 					currentPurchaseSet.add(current);
-					itemAsKey.put(currentItem, currentPurchaseSet);
+					itemAsKey.put(itemDatabase.get(currentItem.getItemName()), currentPurchaseSet);
 				}
 			}
 		}
@@ -98,11 +100,43 @@ public class ListOfPurchases implements Parcelable{
 			for (Purchase purchase : purchaseArray) {
 				purchases.add(purchase);
 			}
-			userAsKey = in.readHashMap(HashSet.class.getClassLoader());
-			itemAsKey = in.readHashMap(HashSet.class.getClassLoader());
-			userDatabase = in.readHashMap(User.class.getClassLoader());
-			itemDatabase = in.readHashMap(Item.class.getClassLoader());
-			purchaseDatabase = in.readHashMap(Purchase.class.getClassLoader());
+
+			itemAsKey = new HashMap<Item, HashSet<Purchase>>();
+			int itemAsKeySize = in.readInt();
+			for(int count = 0; count < itemAsKeySize; ++count) {
+				HashSet<Purchase> purchaseSet = new HashSet<Purchase>();
+				Purchase[] purchaseSetArray;
+				Item currentItem = in.readParcelable(Item.class.getClassLoader());
+				purchaseSetArray = in.createTypedArray(Purchase.CREATOR);
+				for (Purchase purchase : purchaseSetArray) {
+					purchaseSet.add(purchase);
+				}
+				itemAsKey.put(currentItem, purchaseSet);
+			}
+
+			int userDatabaseSize = in.readInt();
+			userDatabase = new HashMap<String, User>();
+			for(int count = 0; count < userDatabaseSize; ++count) {
+				String key = in.readString();
+				User value = in.readParcelable(User.class.getClassLoader());
+				userDatabase.put(key, value);
+			}
+
+			int itemDatabaseSize = in.readInt();
+			itemDatabase = new HashMap<String, Item>();
+			for(int count = 0; count < itemDatabaseSize; ++count) {
+				String key = in.readString();
+				Item value = in.readParcelable(Item.class.getClassLoader());
+				itemDatabase.put(key, value);
+			}
+
+			int purchaseDatabaseSize = in.readInt();
+			purchaseDatabase = new HashMap<String, Purchase>();
+			for(int count = 0; count < purchaseDatabaseSize; ++count) {
+				String key = in.readString();
+				Purchase value = in.readParcelable(Purchase.class.getClassLoader());
+				purchaseDatabase.put(key, value);
+			}
 
 		} catch (Exception e) {
 			Log.e("PURCHASES PARCEL ERROR", e.toString());
@@ -466,10 +500,34 @@ public class ListOfPurchases implements Parcelable{
 	public void writeToParcel(Parcel out, int flags) {
 		Purchase[] purchaseArray = new Purchase[purchases.size()];
 		out.writeTypedArray(purchases.toArray(purchaseArray), 0);
-		out.writeMap(userAsKey);
-		out.writeMap(itemAsKey);
-		out.writeMap(userDatabase);
-		out.writeMap(itemDatabase);
-		out.writeMap(purchaseDatabase);
+
+		out.writeInt(itemAsKey.size());
+		for(Item key : itemAsKey.keySet()) {
+			Purchase[] purchaseSetArray = new Purchase[itemAsKey.get(key).size()];
+			out.writeParcelable(key, flags);
+			out.writeTypedArray(itemAsKey.get(key).toArray(purchaseSetArray), flags);
+		}
+		// out.writeMap(itemAsKey);
+
+		out.writeInt(userDatabase.size());
+		for(String key : userDatabase.keySet()) {
+			out.writeString(key);
+			out.writeParcelable(userDatabase.get(key), flags);
+		}
+		// out.writeMap(userDatabase);
+
+		out.writeInt(itemDatabase.size());
+		for(String key : itemDatabase.keySet()) {
+			out.writeString(key);
+			out.writeParcelable(itemDatabase.get(key), flags);
+		}
+		// out.writeMap(itemDatabase);
+
+		out.writeInt(purchaseDatabase.size());
+		for(String key : purchaseDatabase.keySet()) {
+			out.writeString(key);
+			out.writeParcelable(purchaseDatabase.get(key), flags);
+		}
+		// out.writeMap(purchaseDatabase);
 	}
 }

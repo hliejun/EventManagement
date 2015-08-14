@@ -25,6 +25,8 @@
         android:text="Create New Misc. Bill ..."
         android:id="@+id/createBillButton"
         android:onClick="createBill"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
         android:layout_centerHorizontal="true"/>
 
     <Button
@@ -33,6 +35,8 @@
         android:text="Home"
         android:id="@+id/backToMain"
         android:onClick="createBill"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"/>
 

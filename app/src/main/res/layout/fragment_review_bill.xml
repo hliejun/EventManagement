@@ -24,6 +24,8 @@
         android:id="@+id/createDebtsButton"
         android:layout_alignParentStart="true"
         android:onClick="createDebts"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
         android:layout_alignParentBottom="true"/>
 
     <Button
@@ -33,6 +35,8 @@
         android:id="@+id/remindPayButton"
         android:layout_alignTop="@+id/createDebtsButton"
         android:layout_toEndOf="@+id/createDebtsButton"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
         android:onClick="remindPayment"/>
 
     <Button
@@ -42,6 +46,8 @@
         android:id="@+id/backToMain"
         android:layout_toEndOf="@+id/remindPayButton"
         android:layout_alignTop="@+id/createDebtsButton"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
         android:focusableInTouchMode="false"
         android:onClick="backHome"/>
 

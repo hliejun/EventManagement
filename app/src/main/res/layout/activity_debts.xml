@@ -1,5 +1,49 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
-    android:name="sg.edu.nus.comp.orbital.eventmanagement.DebtsActivityFragment"
-    tools:layout="@layout/fragment_debts" android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                tools:context=".DebtsActivity"
+                android:weightSum="1">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/debts_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <include
+            android:id="@+id/debts_toolbar"
+            layout="@layout/toolbar">
+        </include>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/debts_tabs"
+            style="@style/CustomTabLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            app:tabMode="fixed"
+            />
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <!-- android.support.design.widget.TabLayout
+        android:id="@+id/add_users_tabs"
+        style="@style/CustomTabLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        app:tabMode="fixed"
+        / -->
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/debts_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="390dp"
+        android:background="@color/background_material_light"
+        android:layout_weight="0.97"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/debts_appbar"/>
+</RelativeLayout>

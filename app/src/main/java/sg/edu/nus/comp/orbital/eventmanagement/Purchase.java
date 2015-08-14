@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 /*
@@ -21,7 +22,7 @@ import java.util.HashSet;
  * 
  * @author Huang Lie Jun
  */
-public class Purchase implements Parcelable{
+public class Purchase implements Parcelable, Serializable {
 	protected HashSet<User> users = new HashSet<User>();
 	protected Item item = null;
 	protected int quantity = 0;

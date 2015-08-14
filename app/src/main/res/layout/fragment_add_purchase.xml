@@ -11,11 +11,11 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:id="@+id/addUser"
-        android:layout_marginTop="60dp"
         android:src="@drawable/three_users_32"
-        android:onClick="addUsers"/>
+        android:onClick="addUsers"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -24,9 +24,11 @@
         android:hint="Item Name"
         android:ems="10"
         android:id="@+id/itemName"
-        android:layout_above="@+id/itemType"
         android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:focusableInTouchMode="true"
+        android:layout_below="@+id/addUser"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="89dp"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -35,11 +37,10 @@
         android:inputType="textPersonName"
         android:hint="Item Type"
         android:ems="10"
-        android:layout_above="@+id/itemCost"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_centerVertical="true"
-        />
+        android:layout_below="@+id/itemName"
+        android:layout_alignParentRight="true"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -50,7 +51,8 @@
         android:hint="Unit Cost"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_above="@+id/itemQuantity"/>
+        android:layout_below="@+id/itemType"
+        android:layout_alignParentRight="true"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -61,17 +63,20 @@
         android:hint="Quantity"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/itemCost"
+        android:layout_alignParentRight="true"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create Purchase"
         android:id="@+id/confirmCreatePurchase"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
+        android:layout_marginBottom="46dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="78dp"/>
+        android:layout_centerHorizontal="true"/>
 
 
 

@@ -1,7 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:DebtsActivity="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
     tools:context="sg.edu.nus.comp.orbital.eventmanagement.DebtsActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        android:title="Search"
+        android:icon="@drawable/search_icon"
+        DebtsActivity:showAsAction="collapseActionView|ifRoom"
+        DebtsActivity:actionViewClass="android.support.v7.widget.SearchView" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="200"
+        android:title="@string/action_settings"
+        android:icon="@drawable/settings_icon"
+        DebtsActivity:showAsAction="ifRoom"></item>
+
 </menu>

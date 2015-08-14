@@ -4,10 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 /*** User Group class ***/
-public class Group implements Parcelable{
+public class Group implements Parcelable, Serializable {
 	protected String groupID = null;
 	protected String groupName = null;
 	protected HashSet<User> users = null;

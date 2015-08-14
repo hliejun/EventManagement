@@ -22,6 +22,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayList;
@@ -41,6 +45,8 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     protected HashMap<User, Double> userCostTable = null;
     protected Parcel parcel = null;
     protected Context mContext;
+    final static private String DEBT_DATABASE = "debtData.xml";
+    protected HashMap<String, ArrayList<Debt>> debtStorage = null;
 
     private EditText paidAmount;
 
@@ -181,20 +187,21 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
 //        billInReview.addPurchase(pgprOrders);
 //        billInReview.addPurchase(lollipop);
 
+        // Throw exception if cannot read bill
+        if (billInReview == null) {
+            throw new RuntimeException("Error acquiring bill for this review session!");
+        }
+
+
         billInReview.setList();
 
         billInReview.costCalc();
 
         userCostTable = billInReview.getUserCostTable();
 
-        // Throw exception if cannot read bill
-        if (billInReview == null) {
-            throw new RuntimeException("Error acquiring bill for this review session!");
-        }
-
         // Get variables from Bill object received from previous activity
         eventTitle = billInReview.getBillTitle();
-        userCostTable = billInReview.getUserCostTable();
+        //userCostTable = billInReview.getUserCostTable();
 
         // Set Layout Manager and RecyclerView
         mLayoutManager = new LinearLayoutManager(this);
@@ -232,8 +239,9 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         UserCostPair[] userCostPair = mAdapter.getUserCostTable();
         String[] paidAmt = mAdapter.getPaidAmount();
         Double currPaid = -1.0;
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         boolean failToParse = false;
+        final ReviewBillActivity baseActivity = this;
 
         for(Integer index : selectionMask) {
 
@@ -280,24 +288,65 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
                     }
             );
         } else {
+            // Read database
+            readDebtDatabaseFromFile();
+
+            if (debtStorage == null) {
+                //Log.d("DEBT_STORAGE", "ERROR: NULL STORAGE READ");
+                debtStorage = new HashMap<String, ArrayList<Debt>>();
+            }
             for (User user : billInReview.getDebtDatabase().keySet()) {
                 HashSet<Debt> debts = billInReview.getDebtDatabase().get(user);
-                for (Debt debt : debts) {
-                    Log.i("REVIEW_BILL_ACTIVITY", "Name of Debtor: " + user.getUserName());
-                    Log.i("REVIEW_BILL_ACTIVITY", "Name of Loaner:" + debt.getLoaner().getUserName());
-                    Log.i("REVIEW_BILL_ACTIVITY", "Debt: $" + debt.getDebtAmt());
+                ArrayList<Debt> storedDebts = debtStorage.get(user.getUserName());
+
+                if (storedDebts == null) {
+                    storedDebts = new ArrayList<Debt>();
+                    for (Debt debt : debts) {
+                        storedDebts.add(debt);
+                    }
+                    debtStorage.put(user.getUserName(), storedDebts);
+                } else {
+                    for (Debt debt : debts) {
+                        storedDebts.add(debt);
+//                            Log.i("REVIEW_BILL_ACTIVITY", "Name of Debtor: " + user.getUserName());
+//                            Log.i("REVIEW_BILL_ACTIVITY", "Name of Loaner:" + debt.getLoaner().getUserName());
+//                            Log.i("REVIEW_BILL_ACTIVITY", "Debt: $" + debt.getDebtAmt());
+                    }
+                    debtStorage.put(user.getUserName(), storedDebts);
                 }
             }
+            // Write to internal storage
+
+            writeDebtDatabaseToFile(debtStorage);
+
             alertDialog.setMessage("Great! We have saved your debts! You may return to the main " +
                     "page or edit the fields and create debts again!");
             alertDialog.setTitle("Debts created");
             alertDialog.setPositiveButton("OK", null);
+            alertDialog.setNeutralButton("Bring Me There",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(baseActivity, DebtsActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
             alertDialog.setCancelable(true);
             alertDialog.create().show();
 
             alertDialog.setPositiveButton("Ok",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+                        }
+                    }
+            );
+
+            alertDialog.setNeutralButton("Bring Me There",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getParent(), DebtsActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
                     }
             );
@@ -310,25 +359,24 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     }
 
     public void backHome(View view) {
-
-        // Pass back bill!!!
-
         finish();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.createDebtsButton) {
-            createDebts(view);
-        } else if (view.getId() == R.id.remindPayButton) {
-            remindPayment(view);
-        } else if (view.getId() == R.id.backToMain) {
-            backHome(view);
-        } else if (view.getId() == R.id.userCost) {
-            int index = mRecyclerView.getChildAdapterPosition(view);
-            if (actionMode != null) {
-                myToggleSelection(index);
+        if (view != null) {
+            if (view.getId() == R.id.createDebtsButton) {
+                createDebts(view);
+            } else if (view.getId() == R.id.remindPayButton) {
+                remindPayment(view);
+            } else if (view.getId() == R.id.backToMain) {
+                backHome(view);
+            } else if (view.getId() == R.id.userCost) {
+                int index = mRecyclerView.getChildAdapterPosition(view);
+                if (actionMode != null) {
+                    myToggleSelection(index);
+                }
             }
         }
     }
@@ -441,5 +489,53 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     //@Override
     public void onRequestDisallowInterceptTouchEvent(boolean b) {
 
+    }
+
+    public boolean writeDebtDatabaseToFile(HashMap<String, ArrayList<Debt>> debtStorage){
+        FileOutputStream fos;
+        ObjectOutputStream oos=null;
+        try{
+            fos = getApplicationContext().openFileOutput(DEBT_DATABASE, Context.MODE_PRIVATE);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(debtStorage);
+            oos.close();
+            return true;
+        }catch(Exception e){
+            Log.d("DEBT_DATABASE", "Can't save debt database"+e.getMessage());
+            return false;
+        }
+        finally{
+            if(oos!=null)
+                try{
+                    oos.close();
+                }catch(Exception e){
+                    Log.d("DEBT_DATABASE", "Error while closing stream " + e.getMessage());
+                }
+        }
+    }
+
+    private boolean readDebtDatabaseFromFile(){
+        FileInputStream fin;
+        ObjectInputStream ois=null;
+        try{
+            fin = getApplicationContext().openFileInput(DEBT_DATABASE);
+            ois = new ObjectInputStream(fin);
+            debtStorage =(HashMap<String, ArrayList<Debt>>)ois.readObject();
+            ois.close();
+            Log.d("DEBT_DATABASE", "Debt Database read successfully!");
+            return true;
+        }catch(Exception e){
+            Log.d("DEBT_DATABASE", "Cant read debt database"+e.getMessage());
+            return false;
+        }
+        finally{
+            if(ois!=null)
+                try{
+                    ois.close();
+                }catch(Exception e){
+                    Log.d("DEBT_DATABASE", "Error in closing stream while reading debt database" + e
+                            .getMessage());
+                }
+        }
     }
 }

@@ -25,15 +25,30 @@
         android:text="Add New Purchase ..."
         android:id="@+id/addPurchaseButton"
         android:onClick="addPurchase"
-        android:layout_centerHorizontal="true"/>
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="50dp"/>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Confirm"
         android:id="@+id/confirmButton"
-        android:onClick="confirmBill"
+        android:onClick="dialogQuery"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"/>
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/bill_title"
+        android:inputType="textPersonName"
+        android:hint="Enter bill title ..."
+        android:layout_alignParentStart="true"/>
+    <!--android:inputType="textPersonName"-->
 
 </RelativeLayout>

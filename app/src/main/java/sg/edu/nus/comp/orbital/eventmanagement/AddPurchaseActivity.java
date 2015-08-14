@@ -2,6 +2,7 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -69,7 +70,7 @@ public class AddPurchaseActivity extends ActionBarActivity {
 
                                 // Pass Purchase on ...
                                 Intent output = new Intent();
-                                output.putExtra("NEW_PURCHASE", newPurchase);
+                                output.putExtra("NEW_PURCHASE", (Parcelable)newPurchase);
                                 setResult(RESULT_OK, output);
                                 finish();
                             } catch (Exception e) {
@@ -121,6 +122,7 @@ public class AddPurchaseActivity extends ActionBarActivity {
                     try {
                         Bundle bundle = data.getExtras();
                         ArrayList<User> userArray = bundle.getParcelableArrayList("USER_SET");
+                        users.clear();
                         for (User user : userArray) {
                             users.add(user);
                         }
