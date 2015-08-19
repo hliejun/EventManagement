@@ -16,7 +16,7 @@
         android:id="@+id/imageView"
         android:src="@drawable/main_logo"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:layout_marginBottom="200dp"/>
 
     <TextView
@@ -27,7 +27,7 @@
         android:id="@+id/textView"
         android:textColor="@color/white"
         android:layout_centerHorizontal="true"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:layout_marginTop="320dp"
         android:paddingTop="50dp"/>
 
@@ -35,11 +35,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Version 0.10 (Alpha)"
+        android:text="ALL ARTWORK DESIGNED BY FREEPIK"
         android:id="@+id/version"
-        android:textColor="@color/white"
+        android:textColor="@color/darkblue"
         android:layout_centerHorizontal="true"
-        android:textSize="8sp"
+        android:textSize="16sp"
         android:paddingTop="8dp"
-        android:layout_below="@+id/textView"/>
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="10dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/freepik"
+        android:layout_below="@+id/version"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/freepik"/>
 </RelativeLayout>

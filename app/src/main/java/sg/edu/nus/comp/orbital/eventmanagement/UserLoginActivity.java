@@ -89,7 +89,7 @@ public class UserLoginActivity extends AppCompatActivity {
         };
 
         Handler handler = new Handler();
-        handler.postDelayed(nextAct, 2000);
+        handler.postDelayed(nextAct, 6000);
 
 //        User user01 = new User("Larry", "91159407");
 //        User user02 = new User("Renfred", "26263460");
