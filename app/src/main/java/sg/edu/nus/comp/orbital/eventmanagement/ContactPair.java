@@ -3,7 +3,7 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 /**
  * Created by Larry on 13/7/15.
  */
-public class ContactPair {
+public class ContactPair implements Comparable<ContactPair> {
     protected String username = null;
     protected String phoneNumber = null;
 
@@ -35,5 +35,10 @@ public class ContactPair {
             throw new IllegalArgumentException(" Invalid argument for contact pair!");
         }
         phoneNumber = number;
+    }
+
+    @Override
+    public int compareTo(ContactPair another) {
+        return this.getName().compareTo(another.getName());
     }
 }

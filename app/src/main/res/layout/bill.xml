@@ -8,15 +8,29 @@
 
     <TextView
         android:id="@+id/billTitle"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="26sp"
+        android:paddingLeft="12dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/billIcon"
+        android:gravity="center_vertical|center_horizontal">
+    </TextView>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/billIcon"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="2dp"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentTop="true">
-    </TextView>
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:src="@drawable/bill_icon">
+    </ImageView>
+
 
 </RelativeLayout>

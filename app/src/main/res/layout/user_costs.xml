@@ -14,28 +14,30 @@
         android:paddingRight="8dp"
         android:paddingTop="8dp"
         android:paddingBottom="4dp"
-        android:layout_alignParentLeft="true">
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/user_image">
     </ImageView>
 
     <TextView
         android:id="@+id/userName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="26sp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="5dp"
         android:paddingBottom="2dp"
         android:layout_toRightOf="@+id/profilePic"
         android:layout_alignParentStart="false"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/profilePic">
     </TextView>
 
     <TextView
         android:id="@+id/cost"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="26sp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="2dp"
@@ -48,16 +50,17 @@
         android:id="@+id/paid"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="26sp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
         android:layout_below="@+id/cost"
-        android:hint="Enter Paid Amount Here! =)"
+        android:hint="Enter paid amount ..."
         android:singleLine="true"
         android:inputType="numberDecimal"
-        android:layout_toRightOf="@+id/profilePic">
+        android:layout_toRightOf="@+id/profilePic"
+        android:layout_alignBottom="@+id/profilePic">
     </EditText>
 
 </RelativeLayout>

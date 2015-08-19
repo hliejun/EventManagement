@@ -1,12 +1,21 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Typeface;
+import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.GestureDetectorCompat;
 
 import android.annotation.TargetApi;
+import android.telephony.gsm.SmsManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.support.v7.app.AlertDialog;
 import android.os.Parcel;
@@ -21,11 +30,14 @@ import android.view.MenuInflater;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayList;
@@ -47,8 +59,14 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     protected Context mContext;
     final static private String DEBT_DATABASE = "debtData.xml";
     protected HashMap<String, ArrayList<Debt>> debtStorage = null;
+    protected ArrayList<Bill> myBills = new ArrayList<Bill>();
+    final static private String BILLS_FILENAME = "bills.xml";
 
+    protected User masterUser = null;
     private EditText paidAmount;
+
+    private DecimalFormat df = new DecimalFormat("#.00");
+    final static private String USER_FILENAME = "masterUser.xml";
 
 
     GestureDetectorCompat gestureDetector = null;
@@ -77,7 +95,6 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         Bundle bundle = intent.getExtras();
         billInReview = bundle.getParcelable("NEW_BILL");
 
-
         // Animation and transition handling
         //getWindow().setAllowReturnTransitionOverlap(true);
         //getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
@@ -85,6 +102,16 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
 
         // Initialize layout
         setContentView(R.layout.activity_review_bill);
+
+        final Button createDebtsButton = (Button)findViewById(R.id
+                .createDebtsButton);
+        final Button remindFriends = (Button)findViewById(R.id.remindPayButton);
+        final Button bills = (Button)findViewById(R.id.backToMain);
+        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/GoodDog" +
+                ".ttf");
+        createDebtsButton.setTypeface(type);
+        remindFriends.setTypeface(type);
+        bills.setTypeface(type);
 
         ContextManager.context = mContext;
 
@@ -207,8 +234,12 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.scrollToPosition(0);
         mRecyclerView = (RecyclerView) findViewById(R.id.UserCostList);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setScrollContainer(true);
+
 
         // Instantiate the adapter and pass in its data source:
         mAdapter = new BillSummaryAdapter(userCostTable);
@@ -319,14 +350,16 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
 
             writeDebtDatabaseToFile(debtStorage);
 
-            alertDialog.setMessage("Great! We have saved your debts! You may return to the main " +
-                    "page or edit the fields and create debts again!");
+            alertDialog.setMessage("Great! We have saved your debts! Would you like to view them now?");
             alertDialog.setTitle("Debts created");
-            alertDialog.setPositiveButton("OK", null);
-            alertDialog.setNeutralButton("Bring Me There",
+            alertDialog.setPositiveButton("I'm good.", null);
+            alertDialog.setNeutralButton("Bring me there!",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+                            readBillsFromFile();
+                            writeBillsToFile(billInReview);
                             Intent intent = new Intent(baseActivity, DebtsActivity.class);
+
                             startActivity(intent);
                             finish();
                         }
@@ -359,6 +392,14 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
     }
 
     public void backHome(View view) {
+        backHome();
+    }
+
+    public void backHome() {
+        Intent intent = new Intent(this, BillsActivity.class);
+        readBillsFromFile();
+        writeBillsToFile(billInReview);
+        startActivity(intent);
         finish();
     }
 
@@ -369,7 +410,7 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
             if (view.getId() == R.id.createDebtsButton) {
                 createDebts(view);
             } else if (view.getId() == R.id.remindPayButton) {
-                remindPayment(view);
+                remindFriends(view);
             } else if (view.getId() == R.id.backToMain) {
                 backHome(view);
             } else if (view.getId() == R.id.userCost) {
@@ -379,6 +420,11 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        backHome();
     }
 
     //TODO: CREATE PAGES / ACTIVITY FOR VIEW AND EDIT EXISTING DEBTS / ASSETS
@@ -534,6 +580,200 @@ public class ReviewBillActivity extends ActionBarActivity implements RecyclerVie
                     ois.close();
                 }catch(Exception e){
                     Log.d("DEBT_DATABASE", "Error in closing stream while reading debt database" + e
+                            .getMessage());
+                }
+        }
+    }
+
+
+    public void remindFriends(View view) {
+        final List<Integer> selectionMask = mAdapter.getSelectedIndex();
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        boolean failToParse = false;
+        final ReviewBillActivity baseActivity = this;
+        final UserCostPair[] userCostPair = mAdapter.getUserCostTable();
+        readMasterUserFromFile();
+
+        final User master = masterUser;
+
+        alertDialog.setMessage("This will send an SMS to each selected friend to remind them of " +
+                "their payment. Charges depends on your carrier service. Are you sure?");
+        alertDialog.setTitle("You are about to send SMS...");
+        alertDialog.setPositiveButton("Yeah, do it!",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        for(Integer index : selectionMask) {
+                            String phone = userCostPair[index].getUser().getPhoneNumber();
+
+                            sendSMS(phone, "Hey! You still owe me $" + df.format(userCostPair[index].getCost()) + " for that " +
+                                    billInReview.getBillTitle() + "! Remember to pay me hor! ~ " +
+                                    "From " + master.getUserName() + ", sent via Operational $plit Payment $ystem =)");
+                        }
+                    }
+                });
+        alertDialog.setNegativeButton("Nope, cancel!", null);
+        alertDialog.setCancelable(true);
+        alertDialog.create().show();
+    }
+
+    void sendSMS(String phoneNumber, String message)
+    {
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(SENT), 0);
+
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(DELIVERED), 0);
+
+        //---when the SMS has been sent---
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Snackbar.make(findViewById(android.R.id.content), "You have sent out SMS " +
+                                        "successfully! ",
+                                Snackbar.LENGTH_LONG)
+                                .setActionTextColor(getResources().getColor(R.color.blue))
+                                .show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Snackbar.make(findViewById(android.R.id.content), "Encountered generic " +
+                                        "failure in SMS! Please try again!",
+                                Snackbar.LENGTH_LONG)
+                                .setActionTextColor(getResources().getColor(R.color.blue))
+                                .show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Snackbar.make(findViewById(android.R.id.content), "No service available " +
+                                        "for SMS reminders! Please try again later!",
+                                Snackbar.LENGTH_LONG)
+                                .setActionTextColor(getResources().getColor(R.color.blue))
+                                .show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Snackbar.make(findViewById(android.R.id.content), "Encountered null PDU " +
+                                        "error when sending SMS! Please try again!",
+                                Snackbar.LENGTH_LONG)
+                                .setActionTextColor(getResources().getColor(R.color.blue))
+                                .show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Snackbar.make(findViewById(android.R.id.content), "SMS cannot be sent as " +
+                                        "radio is switched off!" +
+                                        " Please try again!",
+                                Snackbar.LENGTH_LONG)
+                                .setActionTextColor(getResources().getColor(R.color.blue))
+                                .show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SENT));
+
+        //---when the SMS has been delivered---
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Snackbar.make(findViewById(android.R.id.content), "Your SMS has been " +
+                                        "delivered" +
+                                        " " +
+                                        "successfully! ",
+                                Snackbar.LENGTH_LONG)
+                                .setActionTextColor(getResources().getColor(R.color.blue))
+                                .show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Snackbar.make(findViewById(android.R.id.content), "Your SMS failed to " +
+                                        "deliver successfully! Please try again!",
+                                Snackbar.LENGTH_LONG)
+                                .setActionTextColor(getResources().getColor(R.color.blue))
+                                .show();
+                        break;
+                }
+            }
+        }, new IntentFilter(DELIVERED));
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+    }
+
+    private boolean readMasterUserFromFile(){
+        FileInputStream fin;
+        ObjectInputStream ois=null;
+        try{
+            fin = getApplicationContext().openFileInput(USER_FILENAME);
+            ois = new ObjectInputStream(fin);
+            masterUser =(User)ois.readObject();
+            ois.close();
+            Log.d("USER_LOGIN", "Master user read successfully");
+            return true;
+        }catch(Exception e){
+            Log.d("USER_LOGIN", "Cant read saved user"+e.getMessage());
+            return false;
+        }
+        finally{
+            if(ois!=null)
+                try{
+                    ois.close();
+                }catch(Exception e){
+                    Log.d("USER_LOGIN", "Error in closing stream while reading user" + e
+                            .getMessage());
+                }
+        }
+    }
+
+    public boolean writeBillsToFile(Bill bill) {
+        FileOutputStream fos;
+        ObjectOutputStream oos=null;
+        try{
+            if (myBills == null) {
+                myBills = new ArrayList<Bill>();
+            }
+            myBills.add(bill);
+            fos = getApplicationContext().openFileOutput(BILLS_FILENAME, Context.MODE_PRIVATE);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(myBills);
+            oos.close();
+            return true;
+        }catch(Exception e){
+            Log.d("BILLS", "Can't save bills" + e.getMessage());
+            return false;
+        }
+        finally{
+            if(oos!=null)
+                try{
+                    oos.close();
+                }catch(Exception e){
+                    Log.d("BILLS", "Error while closing stream " + e.getMessage());
+                }
+        }
+    }
+
+    private boolean readBillsFromFile(){
+        FileInputStream fin;
+        ObjectInputStream ois=null;
+        try{
+            fin = getApplicationContext().openFileInput(BILLS_FILENAME);
+            ois = new ObjectInputStream(fin);
+            myBills =(ArrayList<Bill>)ois.readObject();
+            ois.close();
+            Log.d("BILLS", "Bills read successfully");
+            return true;
+        }catch(Exception e){
+            Log.d("BILLS", "Cant read saved bills"+e.getMessage());
+            return false;
+        }
+        finally{
+            if(ois!=null)
+                try{
+                    ois.close();
+                }catch(Exception e){
+                    Log.d("BILLS", "Error in closing stream while reading bills" + e
                             .getMessage());
                 }
         }

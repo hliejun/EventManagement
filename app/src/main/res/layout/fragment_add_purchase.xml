@@ -4,18 +4,10 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@color/material_blue_grey_800"
     tools:context="sg.edu.nus.comp.orbital.eventmanagement.AddPurchaseActivityFragment"
     android:id="@+id/fragment_purchase">
 
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/addUser"
-        android:src="@drawable/three_users_32"
-        android:onClick="addUsers"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -24,11 +16,11 @@
         android:hint="Item Name"
         android:ems="10"
         android:id="@+id/itemName"
+        android:textSize="28sp"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_below="@+id/addUser"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="89dp"/>
+        android:layout_below="@+id/purchase_image"
+        android:layout_alignParentStart="true"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -36,6 +28,7 @@
         android:id="@+id/itemType"
         android:inputType="textPersonName"
         android:hint="Item Type"
+        android:textSize="28sp"
         android:ems="10"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -49,6 +42,7 @@
         android:ems="10"
         android:id="@+id/itemCost"
         android:hint="Unit Cost"
+        android:textSize="28sp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:layout_below="@+id/itemType"
@@ -62,6 +56,7 @@
         android:id="@+id/itemQuantity"
         android:hint="Quantity"
         android:focusable="true"
+        android:textSize="28sp"
         android:focusableInTouchMode="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/itemCost"
@@ -70,14 +65,39 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Purchase"
+        android:text="Create!"
+        android:textSize="28sp"
         android:id="@+id/confirmCreatePurchase"
         android:textColor="@color/white"
         android:backgroundTint="@color/NORMAL_STATE_COLOR"
-        android:layout_marginBottom="46dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_toEndOf="@+id/addUsersButton"
+        android:layout_alignTop="@+id/addUsersButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/addUsersButton"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Users"
+        android:textSize="28sp"
+        android:id="@+id/addUsersButton"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/NORMAL_STATE_COLOR"
+        android:onClick="addUsers"
+        android:layout_below="@+id/itemQuantity"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="57dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/purchase_image"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/purchase_image"
+        android:layout_alignParentStart="false"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
 
 
 </RelativeLayout>

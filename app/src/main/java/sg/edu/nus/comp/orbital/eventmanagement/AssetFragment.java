@@ -3,6 +3,7 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 import android.animation.LayoutTransition;
 import android.app.SearchManager;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,7 @@ public class AssetFragment extends Fragment {
     protected RecyclerView.LayoutManager linearLayoutManager;
     protected ArrayList<Debt> assetDataList = null;
     protected SearchView searchView;
+    protected TextView emptyView;
 
     // Default Constructor
     public AssetFragment() {
@@ -51,11 +54,26 @@ public class AssetFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_asset, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.asset_recycler_view);
         linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setScrollContainer(true);
         setHasOptionsMenu(true);
 
         assetDataList = ((DebtsActivity)getActivity()).getAssetList();
+
+        emptyView = (TextView) rootView.findViewById(R.id.empty_view);
+        Typeface type = Typeface.createFromAsset(this.getActivity().getAssets(),"fonts/GoodDog.ttf");
+
+        if (assetDataList == null || assetDataList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setTypeface(type);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
 
         // TODO: READ FROM MEMORY AND FILTER DEBTS
         adapter = new AssetsAdapter(assetDataList);
@@ -89,6 +107,8 @@ public class AssetFragment extends Fragment {
         final MenuItem menuItem = menu.findItem(R.id.action_search);
         final SearchView searchView =
                 (SearchView) MenuItemCompat.getActionView(menuItem);
+
+
 
         final LinearLayout searchBar = (LinearLayout) searchView.findViewById(R.id.search_bar);
 
@@ -149,9 +169,7 @@ public class AssetFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
     }
 

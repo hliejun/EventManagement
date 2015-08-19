@@ -9,73 +9,71 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="sg.edu.nus.comp.orbital.eventmanagement.MainActivityFragment"
     android:id="@+id/title_activity_main"
+    android:background="@color/material_blue_grey_950"
     android:backgroundTintMode="multiply">
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/groupsButton"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:src = "@drawable/three_users_32"
+        android:src = "@drawable/create_groups_button"
         android:onClick="manageGroups"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentEnd="false"
-        android:layout_below="@+id/imageButton"
-        android:layout_marginLeft="-5dp" />
+        android:background="@null"
+        android:layout_below="@+id/titleBanner"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="5dp"/>
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/inviteButton"
-        android:layout_alignBottom="@+id/groupsButton"
-        android:layout_toEndOf="@+id/groupsButton"
-        android:src = "@drawable/three_users_32"
-        android:onClick="manageInvites"/>
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/eventsButton"
-        android:layout_alignBottom="@+id/inviteButton"
-        android:layout_toEndOf="@+id/inviteButton"
-        android:src="@drawable/three_users_32"
-        android:onClick="manageEvents"/>
+        android:id="@+id/usersButton"
+        android:src = "@drawable/create_users_button"
+        android:onClick="manageUsers"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/groupsButton"
+        android:layout_alignParentLeft="false"
+        android:layout_alignEnd="@+id/groupsButton"
+        android:background="@null"
+        android:layout_centerHorizontal="true"
+        android:layout_alignStart="@id/groupsButton"
+        android:paddingBottom="5dp"/>
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/billsButton"
-        android:layout_alignBottom="@+id/eventsButton"
-        android:layout_toEndOf="@+id/eventsButton"
-        android:src="@drawable/three_users_32"
-        android:onClick="manageBills"/>
+        android:src="@drawable/my_bills_button"
+        android:onClick="manageBills"
+        android:layout_below="@+id/usersButton"
+        android:layout_alignParentStart="false"
+        android:layout_alignEnd="@+id/usersButton"
+        android:background="@null"
+        android:layout_alignStart="@id/groupsButton"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="5dp"/>
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/debtsButton"
-        android:layout_alignBottom="@+id/billsButton"
-        android:layout_toEndOf="@+id/billsButton"
-        android:src="@drawable/three_users_32"
-        android:onClick="manageDebts"/>
+        android:src="@drawable/debts_assets_button"
+        android:onClick="manageDebts"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/billsButton"
+        android:layout_alignParentLeft="false"
+        android:layout_alignEnd="@+id/billsButton"
+        android:background="@null"
+        android:layout_alignStart="@id/groupsButton"
+        android:paddingBottom="5dp"/>
 
-    <ImageButton
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/settingsButton"
-        android:layout_alignBottom="@+id/debtsButton"
-        android:layout_toEndOf="@+id/debtsButton"
-        android:src="@drawable/three_users_32"
-        android:onClick="manageSettings"/>
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/profile"
-        android:layout_alignParentTop="true" />
+        android:id="@+id/titleBanner"
+        android:src="@drawable/main_banner"
+        android:layout_alignParentStart="true"
+        android:paddingTop="20dp"/>
 
 </RelativeLayout>

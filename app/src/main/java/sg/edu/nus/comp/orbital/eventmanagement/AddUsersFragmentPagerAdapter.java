@@ -1,6 +1,8 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddUsersFragmentPagerAdapter extends FragmentPagerAdapter {
-    protected String tabTitles[] = new String[] { "Groups", "Users", "Contacts" };
+    protected String tabTitles[] = new String[] { "Add From Groups", "Add From Users",
+            "Add From Contacts" };
     protected Context context;
     protected int[] imageResId = {
             R.drawable.group_tab,
@@ -55,5 +58,10 @@ public class AddUsersFragmentPagerAdapter extends FragmentPagerAdapter {
         ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
         sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return sb;
+    }
+
+    public CharSequence getTitle(int position) {
+        // Generate title based on item position
+        return tabTitles[position];
     }
 }

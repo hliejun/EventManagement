@@ -3,6 +3,7 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,8 +25,10 @@ import static android.view.GestureDetector.SimpleOnGestureListener;
 import android.content.Context;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -55,6 +58,7 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
     protected RecyclerView mRecyclerView;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected CreateBillAdapter mAdapter;
+    protected TextView emptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,8 +188,11 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.scrollToPosition(0);
         mRecyclerView = (RecyclerView) findViewById(R.id.create_bill_recycler_view);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setScrollContainer(true);
 
         // Instantiate the adapter and pass in its data source:
         mAdapter = new CreateBillAdapter(/*myPurchases*/);
@@ -201,11 +208,29 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     hideKeyboard();
                 }
             }
         });
+
+        Button addPurchaseButton = (Button) findViewById(R.id.addPurchaseButton);
+        Button confirmBill = (Button) findViewById(R.id.confirmButton);
+        emptyView = (TextView) findViewById(R.id.empty_view);
+        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/GoodDog.ttf");
+
+        if (mAdapter.getPurchases() == null || mAdapter.getPurchases().isEmpty()) {
+            mRecyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setTypeface(type);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
+
+        billTitleField.setTypeface(type);
+        addPurchaseButton.setTypeface(type);
+        confirmBill.setTypeface(type);
     }
 
     public void hideKeyboard() {
@@ -323,16 +348,18 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         Intent intent = new Intent(this, ReviewBillActivity.class);
         Bundle bundle = new Bundle();
 
+        ArrayList<Purchase> purchases = mAdapter.getPurchases();
+
         // TODO: Acquire mPayer, Group from database AND event name from input field to be added
         readMasterUserFromFile();
         Group group = new Group("RANDOM");
-        final EditText billTitleField = (EditText)findViewById(R.id.bill_title);
+        final EditText billTitleField = (EditText) findViewById(R.id.bill_title);
         String billTitle = billTitleField.getText().toString();
         billInReview = new Bill(masterUser);
         if (billTitle != null) {
             billInReview.setBillTitle(billTitle);
         }
-        ArrayList<Purchase> purchases = mAdapter.getPurchases();
+
         for (Purchase purchase : purchases) {
             billInReview.addPurchase(purchase);
         }
@@ -357,7 +384,7 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         } else if (view.getId() == R.id.addPurchaseButton) {
             addPurchase(view);
         } else if (view.getId() == R.id.confirmButton) {
-            dialogQuery(view);
+            checkState(view);
         } else if (view.getId() == R.id.purchase) {
             int index = mRecyclerView.getChildAdapterPosition(view);
             if (actionMode != null) {
@@ -462,8 +489,8 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case (0) : {
+        switch (requestCode) {
+            case (0): {
                 if (resultCode == AddPurchaseActivity.RESULT_OK) {
                     try {
                         Bundle bundle = data.getExtras();
@@ -472,7 +499,16 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
                         mAdapter.addPurchase(purchase);
                         Log.d("PURCHASE QUANTITY", Integer.toString(purchase.getQuantity()));
                         mAdapter.notifyDataSetChanged();
-                    } catch(Exception e) {
+
+                        if (mAdapter.getPurchases() == null || mAdapter.getPurchases().isEmpty()) {
+                            mRecyclerView.setVisibility(View.GONE);
+                            emptyView.setVisibility(View.VISIBLE);
+                        } else {
+                            mRecyclerView.setVisibility(View.VISIBLE);
+                            emptyView.setVisibility(View.GONE);
+                        }
+
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -481,28 +517,49 @@ public class CreateBillActivity extends ActionBarActivity implements RecyclerVie
         }
     }
 
-    private boolean readMasterUserFromFile(){
+    private boolean readMasterUserFromFile() {
         FileInputStream fin;
-        ObjectInputStream ois=null;
-        try{
+        ObjectInputStream ois = null;
+        try {
             fin = getApplicationContext().openFileInput(USER_FILENAME);
             ois = new ObjectInputStream(fin);
-            masterUser =(User)ois.readObject();
+            masterUser = (User) ois.readObject();
             ois.close();
             Log.d("USER_LOGIN", "Master user read successfully");
             return true;
-        }catch(Exception e){
-            Log.d("USER_LOGIN", "Cant read saved user"+e.getMessage());
+        } catch (Exception e) {
+            Log.d("USER_LOGIN", "Cant read saved user" + e.getMessage());
             return false;
-        }
-        finally{
-            if(ois!=null)
-                try{
+        } finally {
+            if (ois != null)
+                try {
                     ois.close();
-                }catch(Exception e){
+                } catch (Exception e) {
                     Log.d("USER_LOGIN", "Error in closing stream while reading user" + e
                             .getMessage());
                 }
+        }
+    }
+
+    public void checkState(View view) {
+
+        ArrayList<Purchase> purchases = mAdapter.getPurchases();
+
+        if(purchases==null||purchases.isEmpty())
+
+        {
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setMessage("Oh no! You cannot create a bill without any purchases! Click " +
+                    "the ADD NEW PURCHASE button to create purchases!");
+            alertDialog.setTitle("No purchases detected...");
+            alertDialog.setPositiveButton("Okay, got it!", null);
+            alertDialog.setCancelable(true);
+            alertDialog.create().show();
+        }
+
+        else
+        {
+            dialogQuery(view);
         }
     }
 }

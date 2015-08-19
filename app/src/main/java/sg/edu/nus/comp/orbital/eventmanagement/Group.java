@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 
 /*** User Group class ***/
-public class Group implements Parcelable, Serializable {
+public class Group implements Parcelable, Serializable, Comparable<Group> {
 	protected String groupID = null;
 	protected String groupName = null;
 	protected HashSet<User> users = null;
@@ -100,5 +100,9 @@ public class Group implements Parcelable, Serializable {
         out.writeTypedArray(users.toArray(userArray), 0);
 
 	}
-	
+
+	@Override
+	public int compareTo(Group another) {
+		return this.getGroupName().compareTo(another.getGroupName());
+	}
 }

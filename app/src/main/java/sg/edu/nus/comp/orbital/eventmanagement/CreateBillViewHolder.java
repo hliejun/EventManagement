@@ -1,5 +1,6 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,5 +24,12 @@ public class CreateBillViewHolder extends RecyclerView.ViewHolder {
         itemName = (TextView) itemView.findViewById(R.id.contact_name);
         itemCost = (TextView) itemView.findViewById(R.id.cost);
         itemQuantity = (TextView) itemView.findViewById(R.id.quantity);
+
+        Typeface type = Typeface.createFromAsset(itemView.getContext().getAssets(),"fonts/GoodDog" +
+                ".ttf");
+        userName.setTypeface(type);
+        itemName.setTypeface(type);
+        itemCost.setTypeface(type);
+        itemQuantity.setTypeface(type);
     }
 }

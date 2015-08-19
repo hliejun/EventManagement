@@ -2,6 +2,7 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -9,7 +10,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
@@ -47,6 +50,15 @@ public class CreateMasterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_master);
+        final TextView welcomeMsg = (TextView)findViewById(R.id.welcome_text);
+        final EditText usernameField = (EditText)findViewById(R.id.username_field);
+        final EditText phonenumberField = (EditText)findViewById(R.id.phonenumber_field);
+        final Button doneButton = (Button)findViewById(R.id.toMain);
+        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/GoodDog.ttf");
+        welcomeMsg.setTypeface(type);
+        usernameField.setTypeface(type);
+        phonenumberField.setTypeface(type);
+        doneButton.setTypeface(type);
     }
 
     @Override
@@ -64,9 +76,7 @@ public class CreateMasterActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -74,21 +84,29 @@ public class CreateMasterActivity extends AppCompatActivity {
     public void goToMain(View view) {
         final EditText usernameField = (EditText)findViewById(R.id.username_field);
         final EditText phonenumberField = (EditText)findViewById(R.id.phonenumber_field);
-        String username = usernameField.getText().toString();
         TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-        mPhoneNumber = tMgr.getLine1Number();
-        if(mPhoneNumber == null) {
-            mPhoneNumber = phonenumberField.getText().toString();
+        //mPhoneNumber = null;
+        //mPhoneNumber = tMgr.getLine1Number();
+        //if(mPhoneNumber == null) {
             // TODO: Cannot get number, obtain number manually using alert dialog
-            if(mPhoneNumber == null || mPhoneNumber.length() == 0) {
-                phonenumberField.requestFocus();
-                phonenumberField.setError("PHONE NUMBER FIELD CANNOT BE EMPTY");
-            }
-        } else if(username == null || username.length() == 0) {
+
+         if(usernameField.getText() == null || usernameField.getText().toString().length() ==
+                0) {
             usernameField.requestFocus();
-            usernameField.setError("USERNAME FIELD CANNOT BE EMPTY");
-        } else {
-            Log.d("PHONE_NUM", mPhoneNumber.toString());
+            usernameField.setError("Username cannot be left empty!");
+        }
+            else if(phonenumberField.getText() == null || phonenumberField.getText().toString()
+                    .length
+                    () <= 5) {
+                phonenumberField.requestFocus();
+                phonenumberField.setError("Phone number must be at least 6 digits long!");
+            }
+       // }
+
+        else {
+            String username = usernameField.getText().toString();
+            mPhoneNumber = phonenumberField.getText().toString();
+            Log.d("PHONE_NUM", mPhoneNumber);
             // TODO: Read from database to ensure no repeats
             master = new User(username, mPhoneNumber);
             writeMasterUserToFile(master);

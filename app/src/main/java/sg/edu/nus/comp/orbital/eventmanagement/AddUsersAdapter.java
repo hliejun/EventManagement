@@ -1,5 +1,7 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -13,6 +15,7 @@ import android.widget.CheckBox;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 
 public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHolder> {
 
@@ -25,6 +28,8 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
     protected ArrayList<Group> groupVisible;
     protected ArrayList<User> userVisible;
     protected ArrayList<ContactPair> contactVisible;
+
+    protected int colorCounter = 0;
 
     //TODO: ADD IN SELECTION FLAG HANDLING
     //TODO: ADD IN FEED SELECTION FLAG BACK TO ACTIVITY
@@ -95,79 +100,65 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
         typeString = "ContactPair";
     }
 
-//    public AddUsersAdapter(Group[] arg1, User[] arg2, ContactPair[] arg3){
-//        groupFlag = new SparseBooleanArray();
-//        userFlag = new SparseBooleanArray();
-//        contactFlag = new SparseBooleanArray();
-//        groupData = arg1;
-//        userData = arg2;
-//        contactData = arg3;
-//        groupVisible = new ArrayList<Group>();
-//        userVisible = new ArrayList<User>();
-//        contactVisible = new ArrayList<ContactPair>();
-//        int i = 0;
-//        groupIndexMap = new HashMap<Integer, Integer>();
-//        userIndexMap = new HashMap<Integer, Integer>();
-//        contactIndexMap = new HashMap<Integer, Integer>();
-//        for (ContactPair contact: dataArgs) {
-//            contactVisible.add(contact);
-//            contactIndexMap.put(i, i);
-//            i++;
-//        }
-//        typeString = "ContactPair";
-//    }
-//TODO: USE COMBINED CONSTRUCTOR AND SETTLE ALL AT ONCE
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.contact_view, parent, false);
-
+        int[] colors = parent.getContext().getResources().getIntArray(R.array.palecolors);
+        int color = colors[colorCounter%colors.length];
+        //  view.setBackgroundColor(color);
+        if (colorCounter > 10 * colors.length) {
+            colorCounter = colorCounter%colors.length;
+        }
+        colorCounter++;
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
-
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final int pos = position;
+
+
+        int[] colors = holder.imageView.getResources().getIntArray(R.array.palecolors);
+        int color = colors[position%colors.length];
+
         switch (typeString) {
             case "Group": {
                 //TODO: implement onClick function on textView
-                holder.checkBox.setTag(position);
                 holder.imageView.setImageResource(R.drawable.group_icon);
+                holder.imageView.setColorFilter(color);
                 holder.textView.setText(groupVisible.get(position).getGroupName());
-                //Log.d("DEBUGGING", groupIndexMap.get(position).toString());
                 holder.checkBox.setChecked(groupFlag.get(groupIndexMap.get(position), false));
-                //holder.itemView.setActivated(groupFlag.get(position, false));
 
-                if(position == 0 && groupFlag.get(groupIndexMap.get(position), false) && holder.checkBox.isChecked()) {
-                    lastCheckedGroup = holder.checkBox;
-                    lastCheckedPosGroup = 0;
-                }
 
+//                if(position == 0 && groupFlag.get(groupIndexMap.get(position), false) && holder.checkBox.isChecked()) {
+//                    lastCheckedGroup = holder.checkBox;
+//                    lastCheckedPosGroup = groupIndexMap.get(0);
+//                }
+                holder.checkBox.setTag(position);
                 holder.checkBox.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (v.getId() == R.id.contact_checkbox) {
                             CheckBox cb = (CheckBox) v;
                             int clickedPos = (Integer) cb.getTag();
-                            Log.d("TAG INDICATOR_VISIBLE", Integer.toString(clickedPos));
-                            if (groupIndexMap.get(clickedPos) == null) {
-                                Log.d("TAG INDICATOR_ORIGINAL", "NULL");
-                            } else {
-                                Log.d("TAG INDICATOR_ORIGINAL", Integer.toString(groupIndexMap.get(clickedPos)));
-                            }
+//                            Log.d("TAG INDICATOR_VISIBLE", Integer.toString(clickedPos));
+//                            if (groupIndexMap.get(clickedPos) == null) {
+//                                Log.d("TAG INDICATOR_ORIGINAL", "NULL");
+//                            } else {
+//                                Log.d("TAG INDICATOR_ORIGINAL", Integer.toString(groupIndexMap.get(clickedPos)));
+//                            }
 
                             if (groupIndexMap.get(clickedPos) != null && groupFlag.get(groupIndexMap.get(clickedPos), false)) {
-                                if (lastCheckedGroup != null) {
+                                //if (lastCheckedGroup != null) {
                                     groupFlag.delete(groupIndexMap.get(clickedPos));
-                                }
-                                lastCheckedGroup = cb;
-                                lastCheckedPosGroup = groupIndexMap.get(clickedPos);
-                            } else {
-                                lastCheckedGroup = null;
+                               // }
+//                                lastCheckedGroup = cb;
+//                                lastCheckedPosGroup = groupIndexMap.get(clickedPos);
+                            } else if (groupIndexMap.get(clickedPos) != null){
+//                                lastCheckedGroup = null;
                                 groupFlag.put(groupIndexMap.get(clickedPos), true);
                             }
                         }
@@ -178,6 +169,7 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
             case "User": {
                 //TODO: implement onClick function on textView
                 holder.imageView.setImageResource(R.drawable.user_icon);
+                holder.imageView.setColorFilter(color);
                 holder.textView.setText(userVisible.get(position).getUserName());
                 if (userIndexMap.get(position) != null) {
                     holder.checkBox.setChecked(userFlag.get(userIndexMap.get(position), false));
@@ -185,10 +177,10 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
                 holder.checkBox.setTag(position);
                 //holder.itemView.setActivated(userFlag.get(position, false));
 
-                if(userIndexMap.get(position) == 0 && userFlag.get(0, false) && holder.checkBox.isChecked()) {
-                    lastCheckedUser = holder.checkBox;
-                    lastCheckedPosUser = 0;
-                }
+//                if(userIndexMap.get(position) == 0 && userFlag.get(0, false) && holder.checkBox.isChecked()) {
+//                    lastCheckedUser = holder.checkBox;
+//                    lastCheckedPosUser = 0;
+//                }
 
                 holder.checkBox.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -197,13 +189,13 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
                         int clickedPos = ((Integer) cb.getTag()).intValue();
 
                         if (userFlag.get(userIndexMap.get(clickedPos), false)) {
-                            if (lastCheckedUser != null) {
+                            //if (lastCheckedUser != null) {
                                 userFlag.delete(userIndexMap.get(clickedPos));
-                            }
-                            lastCheckedUser = cb;
-                            lastCheckedPosUser = userIndexMap.get(clickedPos);
-                        } else {
-                            lastCheckedUser = null;
+                            //}
+//                            lastCheckedUser = cb;
+//                            lastCheckedPosUser = userIndexMap.get(clickedPos);
+                        } else if (userIndexMap.get(clickedPos) != null) {
+//                            lastCheckedUser = null;
                             userFlag.put(userIndexMap.get(clickedPos), true);
                         }
                     }
@@ -213,6 +205,7 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
             case "ContactPair": {
                 //TODO: implement onClick function on textView
                 holder.imageView.setImageResource(R.drawable.contacts_icon);
+                holder.imageView.setColorFilter(color);
                 holder.textView.setText(contactVisible.get(position).getName());
                 if (contactIndexMap.get(position) != null) {
                     holder.checkBox.setChecked(contactFlag.get(contactIndexMap.get(position)));
@@ -220,10 +213,10 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
                 holder.checkBox.setTag(new Integer(position));
                 //holder.itemView.setActivated(contactFlag.get(position));
 
-                if(contactIndexMap.get(position) != null && contactIndexMap.get(position) == 0 && contactFlag.get(0, false) && holder.checkBox.isChecked()) {
-                    lastCheckedContacts = holder.checkBox;
-                    lastCheckedPosContacts = 0;
-                }
+//                if(contactIndexMap.get(position) != null && contactIndexMap.get(position) == 0 && contactFlag.get(0, false) && holder.checkBox.isChecked()) {
+//                    lastCheckedContacts = holder.checkBox;
+//                    lastCheckedPosContacts = 0;
+//                }
 
                 holder.checkBox.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -231,16 +224,14 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
                         CheckBox cb = (CheckBox) v;
                         int clickedPos = ((Integer) cb.getTag()).intValue();
 
-                        if (contactIndexMap.get(clickedPos) != null && contactFlag.get
-                                (contactIndexMap
-                                .get(clickedPos), false)) {
-                            if (lastCheckedContacts != null) {
+                        if (contactIndexMap.get(clickedPos) != null && contactFlag.get(contactIndexMap.get(clickedPos), false)) {
+                            //if (lastCheckedContacts != null) {
                                 contactFlag.delete(contactIndexMap.get(clickedPos));
-                            }
-                            lastCheckedContacts = cb;
-                            lastCheckedPosContacts = contactIndexMap.get(clickedPos);
+                            //}
+//                            lastCheckedContacts = cb;
+//                            lastCheckedPosContacts = contactIndexMap.get(clickedPos);
                         } else if (contactIndexMap.get(clickedPos) != null) {
-                            lastCheckedContacts = null;
+                            //lastCheckedContacts = null;
                             contactFlag.put(contactIndexMap.get(clickedPos), true);
                         }
                     }
@@ -279,11 +270,16 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
         protected ImageView imageView;
         protected TextView textView;
         protected CheckBox checkBox;
+        protected View currentView;
         protected ViewHolder(View view) {
             super(view);
+            currentView = view;
             imageView = (ImageView) view.findViewById(R.id.contact_picture);
             textView = (TextView) view.findViewById(R.id.contact_name);
             checkBox = (CheckBox) view.findViewById(R.id.contact_checkbox);
+            Typeface type = Typeface.createFromAsset(view.getContext().getAssets(),
+                    "fonts/GoodDog.ttf");
+            textView.setTypeface(type);
         }
     }
 
@@ -313,7 +309,7 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
 
     public Group removeGroup(int position) {
         final Group group = groupVisible.remove(position);
-        // groupIndexMap.remove(position);
+        groupIndexMap.remove(position);
         // groupIndexMap.put(position, -1);
         notifyItemRemoved(position);
        // Log.d("DEBUGGING", "removeGroup is called");
@@ -323,7 +319,19 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
     public void addGroup(int position, Group group) {
         groupVisible.add(position, group);
         //int originalIndex = Arrays.asList(groupData).indexOf(group);
-        //groupIndexMap.put(position, originalIndex);
+        int originalIndex = -1;
+        int count = 0;
+        for (Group originalGroup : groupData) {
+            if (group.getGroupName().equals(originalGroup.getGroupName()) /*&& group.getUsers()
+                    .size() == originalGroup.getUsers().size()*/) {
+                originalIndex = count;
+                break;
+            }
+            count++;
+        }
+        if (originalIndex != -1) {
+            groupIndexMap.put(position, originalIndex);
+        }
         notifyItemInserted(position);
         //Log.d("DEBUGGING", "addGroup is called");
     }
@@ -331,52 +339,73 @@ public class AddUsersAdapter extends RecyclerView.Adapter<AddUsersAdapter.ViewHo
     public void moveGroup(int fromPosition, int toPosition) {
         final Group group = groupVisible.remove(fromPosition);
         groupVisible.add(toPosition, group);
-        //int originalIndex = groupIndexMap.remove(fromPosition);
-        //groupIndexMap.put(toPosition, originalIndex);
+        int originalIndex = groupIndexMap.remove(fromPosition);
+        groupIndexMap.put(toPosition, originalIndex);
         notifyItemMoved(fromPosition, toPosition);
         //Log.d("DEBUGGING", "moveGroup is called");
     }
 
     public User removeUser(int position) {
         final User user = userVisible.remove(position);
-        //userIndexMap.remove(position);
+        userIndexMap.remove(position);
         notifyItemRemoved(position);
         return user;
     }
 
     public void addUser(int position, User user) {
         userVisible.add(position, user);
-        //int originalIndex = Arrays.asList(userData).indexOf(user);
-        //userIndexMap.put(position, originalIndex);
+        int originalIndex = -1;
+        int count = 0;
+        for (User originalUser : userData) {
+            if (user.getUserName().equals(originalUser.getUserName()) && user.getPhoneNumber()
+                    .equals(originalUser.getPhoneNumber())) {
+                originalIndex = count;
+                break;
+            }
+            count++;
+        }
+        if (originalIndex != -1) {
+            userIndexMap.put(position, originalIndex);
+        }
         notifyItemInserted(position);
     }
 
     public void moveUser(int fromPosition, int toPosition) {
         final User user = userVisible.remove(fromPosition);
-        //int originalIndex = userIndexMap.remove(fromPosition);
-        //userIndexMap.put(toPosition, originalIndex);
+        int originalIndex = userIndexMap.remove(fromPosition);
+        userIndexMap.put(toPosition, originalIndex);
         userVisible.add(toPosition, user);
         notifyItemMoved(fromPosition, toPosition);
     }
 
     public ContactPair removeContact(int position) {
         final ContactPair contact = contactVisible.remove(position);
-        //contactIndexMap.remove(position);
+        contactIndexMap.remove(position);
         notifyItemRemoved(position);
         return contact;
     }
 
     public void addContact(int position, ContactPair contact) {
         contactVisible.add(position, contact);
-        //int originalIndex = Arrays.asList(contactData).indexOf(contact);
-        //contactIndexMap.put(position, originalIndex);
+        int originalIndex = -1;//Arrays.asList(contactData).indexOf(contact);
+        int count = 0;
+        for (ContactPair contactPair : contactData) {
+            if (contactPair.getName().equals(contact.getName())) {
+                originalIndex = count;
+                break;
+            }
+            count++;
+        }
+        if (originalIndex != -1) {
+            contactIndexMap.put(position, originalIndex);
+        }
         notifyItemInserted(position);
     }
 
     public void moveContact(int fromPosition, int toPosition) {
         final ContactPair contact = contactVisible.remove(fromPosition);
-        //int originalIndex = contactIndexMap.remove(fromPosition);
-        //contactIndexMap.put(toPosition, originalIndex);
+        int originalIndex = contactIndexMap.remove(fromPosition);
+        contactIndexMap.put(toPosition, originalIndex);
         contactVisible.add(toPosition, contact);
         notifyItemMoved(fromPosition, toPosition);
     }

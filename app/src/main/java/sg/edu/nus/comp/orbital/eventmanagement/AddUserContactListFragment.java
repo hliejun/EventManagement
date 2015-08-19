@@ -4,6 +4,7 @@ import android.animation.LayoutTransition;
 import android.app.SearchManager;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
@@ -22,9 +23,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AddUserContactListFragment extends Fragment {
 
@@ -37,6 +41,7 @@ public class AddUserContactListFragment extends Fragment {
     protected ArrayList<String> phone_ref ;
     protected ContactPair[] contactDataList = null;
     protected SearchView searchView;
+    protected TextView emptyView;
     //protected SparseBooleanArray contactFlag;
 
     // Obtain a list of contact names from contact list
@@ -84,9 +89,12 @@ public class AddUserContactListFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_user_contact_list, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.add_user_contact_recycler_view);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL_LIST));
         linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setScrollContainer(true);
         setHasOptionsMenu(true);
 
         // Read and create ContactPair from contact list
@@ -103,10 +111,23 @@ public class AddUserContactListFragment extends Fragment {
                 String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 contactDataList[cursor.getPosition()] = new ContactPair(name, number);
             } while (cursor.moveToNext());
+            Arrays.sort(contactDataList);
         }
 
         adapter = new AddUsersAdapter(contactDataList);
         recyclerView.setAdapter(adapter);
+
+        emptyView = (TextView) rootView.findViewById(R.id.empty_view);
+        Typeface type = Typeface.createFromAsset(this.getActivity().getAssets(),"fonts/GoodDog.ttf");
+
+        if (contactDataList == null || contactDataList.length == 0) {
+            recyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setTypeface(type);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
         return rootView;
     }
 
@@ -166,6 +187,10 @@ public class AddUserContactListFragment extends Fragment {
                 public boolean onQueryTextSubmit(String query) {
                     ((AddUsersAdapter) recyclerView.getAdapter()).setFilterContact(query);
                     recyclerView.scrollToPosition(0);
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService
+                            (Context
+                                    .INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
                     return true;
                 }
 
@@ -188,7 +213,8 @@ public class AddUserContactListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_confirm) {
+            ((AddUsersActivity)getActivity()).confirmUsers();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -209,8 +235,14 @@ public class AddUserContactListFragment extends Fragment {
         ArrayList<User> selection = new ArrayList<User>();
         SparseBooleanArray indexArray = ((AddUsersAdapter)adapter).getContactFlag();
         int count = 0;
+
+        if (contactDataList == null) {
+            contactDataList = new ContactPair[0];
+        }
         for (ContactPair contact : contactDataList) {
-            if (indexArray.get(count, false)) {
+            if (indexArray.get(count, false) && contact.getName() != null && contact.getName()
+                    .length() != 0 && contact.getNumber() != null && contact.getNumber().length()
+                    > 5) {
                 selection.add(new User(contact.getName(), contact.getNumber()));
             }
             count++;

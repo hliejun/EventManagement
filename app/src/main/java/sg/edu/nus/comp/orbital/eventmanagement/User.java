@@ -22,7 +22,7 @@ import java.io.Serializable;
  * 
  * @author Huang Lie Jun
  */
-public class User implements Parcelable, Serializable {
+public class User implements Parcelable, Serializable, Comparable<User> {
 
 	protected String userName = null;
 	protected String facebookUID = null;
@@ -214,4 +214,9 @@ public class User implements Parcelable, Serializable {
         out.writeInt(phoneNumThresh);
 //      out.writeInt(photoID);
     }
+
+	@Override
+	public int compareTo(User another) {
+		return this.getUserName().compareTo(another.getUserName());
+	}
 }

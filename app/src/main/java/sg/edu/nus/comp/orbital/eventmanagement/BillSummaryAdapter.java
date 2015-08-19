@@ -85,7 +85,6 @@ public class BillSummaryAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final UserCostViewHolder viewHolder = (UserCostViewHolder) holder;
-        viewHolder.profilePic.setImageResource(R.drawable.small_profile);
         viewHolder.userName.setText("Name: " + userCostTable[position].getUser().getUserName());
         viewHolder.cost.setText("Payment: $" + df.format(userCostTable[position].getCost()));
         viewHolder.paid.setText(paidAmount[position]);

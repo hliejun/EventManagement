@@ -3,6 +3,7 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 import android.animation.LayoutTransition;
 import android.app.SearchManager;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -46,7 +48,8 @@ public class AddUsersActivity extends AppCompatActivity implements android.widge
         setSupportActionBar(toolbar);
         // Show menu icon
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
 
         //setSupportActionBar(toolbar);
         viewPager = (ViewPager) findViewById(R.id.add_users_viewpager);
@@ -61,6 +64,11 @@ public class AddUsersActivity extends AppCompatActivity implements android.widge
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
 
+        final TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/GoodDog.ttf");
+        mTitle.setText(adapter.getTitle(0));
+        mTitle.setTypeface(type);
+
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -68,6 +76,9 @@ public class AddUsersActivity extends AppCompatActivity implements android.widge
 //                Toast toast = Toast.makeText(getApplicationContext(), tab.getText(), Toast
 //                        .LENGTH_SHORT);
 //                toast.show();
+                Typeface type = Typeface.createFromAsset(getAssets(), "fonts/GoodDog.ttf");
+                mTitle.setText(adapter.getTitle(tab.getPosition()));
+                mTitle.setTypeface(type);
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
@@ -195,26 +206,32 @@ public class AddUsersActivity extends AppCompatActivity implements android.widge
 //        return super.onOptionsItemSelected(item);
 //    }
 
-    public void confirmUsers(View view) {
+    public void confirmUsers() {
         // Add users to purchase
-        Intent output = new Intent();
         ArrayList<User> users = new ArrayList<User>();
         AddUserGroupFragment groupFrag = (AddUserGroupFragment)adapter.getItem(0);
         AddUserSingleFragment singleFrag = (AddUserSingleFragment)adapter.getItem(1);
         AddUserContactListFragment contactFrag = (AddUserContactListFragment)adapter.getItem(2);
 
-        for (User user: groupFrag.getSelection()) {
-            users.add(user);
+        if (groupFrag.getSelection() != null) {
+            for (User user : groupFrag.getSelection()) {
+                users.add(user);
+            }
         }
 
-        for (User user: singleFrag.getSelection()) {
-            users.add(user);
+        if (singleFrag.getSelection() != null) {
+            for (User user : singleFrag.getSelection()) {
+                users.add(user);
+            }
         }
 
-        for (User user: contactFrag.getSelection()) {
-            users.add(user);
+        if (contactFrag.getSelection() != null) {
+            for (User user : contactFrag.getSelection()) {
+                users.add(user);
+            }
         }
 
+        Intent output = new Intent();
         output.putExtra("USER_SET", users);
         setResult(RESULT_OK, output);
 
@@ -223,6 +240,11 @@ public class AddUsersActivity extends AppCompatActivity implements android.widge
         }
 
         finish();
+    }
+
+    @Override
+    public void onBackPressed(){
+        confirmUsers();
     }
 
     @Override

@@ -1048,7 +1048,7 @@ class Bill implements calculationSystem, Parcelable , Serializable {
 	// Create a new Debt and add to database
 	public void debtMaking(User debtor, double paidAmt)
 			throws IllegalArgumentException {
-		if (debtor == null || paidAmt <= 0) {
+		if (debtor == null || paidAmt < 0) {
 			throw new IllegalArgumentException(
 					"Invalid Arguments! Cannot create debt!");
 		}

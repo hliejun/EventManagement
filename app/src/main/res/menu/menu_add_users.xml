@@ -12,10 +12,10 @@
         AddUsersActivity:actionViewClass="android.support.v7.widget.SearchView" />
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_confirm"
         android:orderInCategory="200"
-        android:title="@string/action_settings"
-        android:icon="@drawable/settings_icon"
+        android:title="Confirm"
+        android:icon="@drawable/confirm_icon"
         AddUsersActivity:showAsAction="ifRoom"></item>
     <!--item
         android:id="@+id/action_user"

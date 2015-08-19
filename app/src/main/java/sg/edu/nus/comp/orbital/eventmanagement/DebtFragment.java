@@ -3,6 +3,7 @@ package sg.edu.nus.comp.orbital.eventmanagement;
 import android.animation.LayoutTransition;
 import android.app.SearchManager;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -18,6 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -34,6 +38,7 @@ public class DebtFragment extends Fragment {
     protected RecyclerView.LayoutManager linearLayoutManager;
     protected ArrayList<Debt> debtDataList = null;
     protected SearchView searchView;
+    protected TextView emptyView;
 
     // Default Constructor
     public DebtFragment() {
@@ -50,12 +55,27 @@ public class DebtFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_debt, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.debt_recycler_view);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL_LIST));
         linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setScrollContainer(true);
         setHasOptionsMenu(true);
 
         debtDataList = ((DebtsActivity)getActivity()).getDebtList();
+        emptyView = (TextView) rootView.findViewById(R.id.empty_view);
+        Typeface type = Typeface.createFromAsset(this.getActivity().getAssets(),"fonts/GoodDog.ttf");
+
+
+        if (debtDataList == null || debtDataList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setTypeface(type);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
 
         // TODO: READ FROM MEMORY AND FILTER ASSETS
         adapter = new DebtsAdapter(debtDataList);
@@ -147,9 +167,7 @@ public class DebtFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
     }
 

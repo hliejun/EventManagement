@@ -1,5 +1,6 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +26,11 @@ public class UserCostViewHolder extends RecyclerView.ViewHolder {
         userName = (TextView) itemView.findViewById(R.id.userName);
         cost = (TextView) itemView.findViewById(R.id.cost);
         paid = (EditText) itemView.findViewById(R.id.paid);
+        Typeface type = Typeface.createFromAsset(itemView.getContext().getAssets(),"fonts/GoodDog.ttf");
+        userName.setTypeface(type);
+        cost.setTypeface(type);
+        paid.setTypeface(type);
+
 
     }
 

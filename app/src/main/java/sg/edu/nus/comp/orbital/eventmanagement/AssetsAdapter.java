@@ -1,5 +1,7 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -130,6 +132,15 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.ViewHolder
                 holder.imageView.setImageResource(R.drawable.assets_tab);
                 holder.textView.setText(debtDataVisible.get(position).getDebtor().getUserName());
                 holder.costView.setText("$" + df.format(debtDataVisible.get(position).getDebtAmt()));
+                String billText = "Bill: " + debtDataVisible.get(position).getBill()
+                        .getBillTitle() + '\n';
+
+                for (Purchase purchase : debtDataVisible.get(position).getPurchaseSet()) {
+                    billText += "  \u2022 " + purchase.getQuantity() + " x " + purchase.getItem()
+                            .getItemName() + '\n';
+                }
+
+                holder.billInfo.setText(billText);
         //Log.d("DEBUGGING", groupIndexMap.get(position).toString());
                 //holder.checkBox.setChecked(groupFlag.get(groupIndexMap.get(position), false));
                 //holder.itemView.setActivated(groupFlag.get(position, false));
@@ -278,12 +289,22 @@ public class AssetsAdapter extends RecyclerView.Adapter<AssetsAdapter.ViewHolder
         protected TextView textView;
         //protected CheckBox checkBox;
         protected TextView costView;
+        protected TextView billInfo;
 
         protected ViewHolder(View view) {
             super(view);
             imageView = (ImageView) view.findViewById(R.id.contact_picture);
             textView = (TextView) view.findViewById(R.id.contact_name);
             costView = (TextView) view.findViewById(R.id.contact_price);
+            billInfo = (TextView) view.findViewById(R.id.bill_info);
+
+            Typeface type = Typeface.createFromAsset(view.getContext().getAssets(),"fonts/GoodDog.ttf");
+            Typeface numberType = Typeface.createFromAsset(view.getContext().getAssets(),
+                    "fonts/LedBoard.ttf");
+            textView.setTypeface(type);
+            costView.setTypeface(numberType);
+            costView.setTextColor(Color.parseColor("#FFD700"));
+            billInfo.setTypeface(type);
 
            // checkBox = (CheckBox) view.findViewById(R.id.contact_checkbox);
         }

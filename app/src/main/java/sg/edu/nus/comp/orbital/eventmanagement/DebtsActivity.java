@@ -1,5 +1,6 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.graphics.Typeface;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -8,6 +9,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -39,7 +43,13 @@ public class DebtsActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         // Show menu icon
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/GoodDog.ttf");
+        mTitle.setText(this.getTitle());
+        mTitle.setTypeface(type);
 
         //setSupportActionBar(toolbar);
         viewPager = (ViewPager) findViewById(R.id.debts_viewpager);
@@ -59,7 +69,11 @@ public class DebtsActivity extends ActionBarActivity {
 //                Toast toast = Toast.makeText(getApplicationContext(), tab.getText(), Toast
 //                        .LENGTH_SHORT);
 //                toast.show();
-                thisActivity.setTitle(adapter.getTabTitle(tab.getPosition()).toString().toUpperCase());
+                TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+                Typeface type = Typeface.createFromAsset(getAssets(),"fonts/GoodDog.ttf");
+                mTitle.setText(adapter.getTabTitle(tab.getPosition()).toString().toUpperCase());
+                mTitle.setTypeface(type);
+                //thisActivity.setTitle(adapter.getTabTitle(tab.getPosition()).toString().toUpperCase());
             }
 
             @Override

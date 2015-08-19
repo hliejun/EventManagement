@@ -46,6 +46,9 @@ public class BillsAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final BillViewHolder viewHolder = (BillViewHolder) holder;
+        int[] colors = ((BillViewHolder) holder).billIcon.getResources().getIntArray(R.array.palecolors);
+        int color = colors[position%colors.length];
+        ((BillViewHolder) holder).billIcon.setColorFilter(color);
         viewHolder.billEventTitle.setText(myBills.get(position).getBillTitle());
         viewHolder.itemView.setActivated(selectionMask.get(position, false));
     }

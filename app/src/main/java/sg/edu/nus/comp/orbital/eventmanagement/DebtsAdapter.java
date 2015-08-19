@@ -1,5 +1,7 @@
 package sg.edu.nus.comp.orbital.eventmanagement;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -31,7 +33,10 @@ public class DebtsAdapter extends RecyclerView.Adapter<DebtsAdapter.ViewHolder> 
     //protected HashMap<Integer, Integer> assetIndexMap = null;
 
     protected String typeString = null;
-    private DecimalFormat df = new DecimalFormat("#.00");
+    protected DecimalFormat df = new DecimalFormat("#.00");
+
+    protected HashMap<String, ArrayList<Debt>> debtHash;
+
 
 
 //    protected static CheckBox lastCheckedGroup = null;
@@ -133,6 +138,15 @@ public class DebtsAdapter extends RecyclerView.Adapter<DebtsAdapter.ViewHolder> 
                 holder.imageView.setImageResource(R.drawable.debts_tab);
                 holder.textView.setText(debtDataVisible.get(position).getLoaner().getUserName());
                 holder.costView.setText("$" + df.format(debtDataVisible.get(position).getDebtAmt()));
+                String billText = "Bill: " + debtDataVisible.get(position).getBill()
+                        .getBillTitle() + '\n';
+
+                for (Purchase purchase : debtDataVisible.get(position).getPurchaseSet()) {
+                    billText += "  \u2022 " + purchase.getQuantity() + " x " + purchase.getItem()
+                            .getItemName() + '\n';
+                }
+
+                holder.billInfo.setText(billText);
                 //Log.d("DEBUGGING", groupIndexMap.get(position).toString());
                 //holder.checkBox.setChecked(groupFlag.get(groupIndexMap.get(position), false));
                 //holder.itemView.setActivated(groupFlag.get(position, false));
@@ -280,12 +294,21 @@ public class DebtsAdapter extends RecyclerView.Adapter<DebtsAdapter.ViewHolder> 
         protected ImageView imageView;
         protected TextView textView;
         protected TextView costView;
+        protected TextView billInfo;
         //protected CheckBox checkBox;
         protected ViewHolder(View view) {
             super(view);
             imageView = (ImageView) view.findViewById(R.id.contact_picture);
             textView = (TextView) view.findViewById(R.id.contact_name);
             costView = (TextView) view.findViewById(R.id.contact_price);
+            billInfo = (TextView) view.findViewById(R.id.bill_info);
+            Typeface type = Typeface.createFromAsset(view.getContext().getAssets(),"fonts/GoodDog.ttf");
+            Typeface numberType = Typeface.createFromAsset(view.getContext().getAssets(),
+                    "fonts/LedBoard.ttf");
+            textView.setTypeface(type);
+            costView.setTypeface(numberType);
+            costView.setTextColor(Color.parseColor("#FFD700"));
+            billInfo.setTypeface(type);
 //          checkBox = (CheckBox) view.findViewById(R.id.contact_checkbox);
         }
     }
@@ -481,8 +504,8 @@ public class DebtsAdapter extends RecyclerView.Adapter<DebtsAdapter.ViewHolder> 
             int originalIndex = 0;
             int visibleIndex = 0;
             for (Debt debt : debtData) {
-                final String debtorName = debt.getDebtor().getUserName().toLowerCase();
-                if (debtorName.contains(query)) {
+                final String loanerName = debt.getLoaner().getUserName().toLowerCase();
+                if (loanerName.contains(query)) {
                     filteredDebtList.add(debt);
                     debtIndexMap.put(visibleIndex, originalIndex);
                     visibleIndex++;

@@ -41,7 +41,7 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/debts_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="390dp"
+        android:layout_height="match_parent"
         android:background="@color/background_material_light"
         android:layout_weight="0.97"
         android:layout_alignParentBottom="true"
